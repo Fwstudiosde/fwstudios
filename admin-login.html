@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | FWStudios</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        body { background: #0a0e27; }
+        .gradient-bg { background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%); }
+        .gradient-text { background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .text-glow { text-shadow: 0 0 10px rgba(0, 212, 255, 0.5), 0 0 20px rgba(0, 212, 255, 0.3); }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md">
+        <div class="text-center mb-8">
+            <a href="fwstudios-website">
+                <h1 class="text-4xl font-black gradient-text text-glow mb-2">FWStudios</h1>
+            </a>
+            <p class="text-gray-400">Admin Panel</p>
+        </div>
+
+        <div class="bg-[#0f1629] rounded-2xl p-8 border border-[#00d4ff]/30">
+            <h2 class="text-2xl font-bold text-white mb-6">Login</h2>
+
+            <div id="error-message" class="hidden mb-4 p-4 bg-red-500/20 border border-red-500/50 rounded-lg text-red-400 text-sm"></div>
+
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label for="email" class="block text-gray-300 text-sm font-semibold mb-2">E-Mail</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        required
+                        autocomplete="email"
+                        class="w-full px-4 py-3 rounded-lg bg-[#0a0e27] border border-gray-700 focus:border-[#00d4ff] focus:outline-none text-white"
+                        placeholder="accounts@fwstudios.de">
+                </div>
+
+                <div>
+                    <label for="password" class="block text-gray-300 text-sm font-semibold mb-2">Passwort</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        required
+                        autocomplete="current-password"
+                        class="w-full px-4 py-3 rounded-lg bg-[#0a0e27] border border-gray-700 focus:border-[#00d4ff] focus:outline-none text-white"
+                        placeholder="••••••••">
+                </div>
+
+                <button
+                    type="submit"
+                    class="w-full gradient-bg text-white px-6 py-3 rounded-lg font-bold hover:shadow-lg transition-all duration-300 mt-6">
+                    Anmelden
+                </button>
+            </form>
+        </div>
+
+        <div class="text-center mt-6">
+            <a href="fwstudios-website" class="text-gray-400 hover:text-[#00d4ff] transition-colors text-sm">
+                ← Zurück zur Website
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Check if already logged in
+        if (localStorage.getItem('adminLoggedIn') === 'true') {
+            window.location.href = 'admin-dashboard';
+        }
+
+        const loginForm = document.getElementById('login-form');
+        const errorMessage = document.getElementById('error-message');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+
+        // Debug: Test if inputs are clickable
+        emailInput.addEventListener('focus', function() {
+            console.log('Email field focused');
+        });
+
+        passwordInput.addEventListener('focus', function() {
+            console.log('Password field focused');
+        });
+
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+
+            console.log('Form submitted with email:', email);
+
+            // Admin credentials
+            const adminEmail = 'accounts@fwstudios.de';
+            const adminPassword = 'Fw0302!';
+
+            if (email === adminEmail && password === adminPassword) {
+                // Set login flag in localStorage
+                localStorage.setItem('adminLoggedIn', 'true');
+                localStorage.setItem('adminEmail', email);
+
+                // Redirect to dashboard
+                window.location.href = 'admin-dashboard';
+            } else {
+                // Show error
+                errorMessage.textContent = 'Ungültige E-Mail oder Passwort';
+                errorMessage.classList.remove('hidden');
+
+                // Hide error after 3 seconds
+                setTimeout(() => {
+                    errorMessage.classList.add('hidden');
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>

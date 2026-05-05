@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGB | FWStudios</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        body { background: #0a0e27; overflow-x: hidden; }
+        .gradient-bg { background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%); }
+        .gradient-text { background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .text-glow { text-shadow: 0 0 10px rgba(0, 212, 255, 0.5), 0 0 20px rgba(0, 212, 255, 0.3); }
+    </style>
+</head>
+<body class="bg-[#0a0e27]">
+    <nav class="fixed w-full top-0 z-50 border-b border-gray-800 backdrop-blur-sm bg-[#0a0e27]/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center"><a href="chatbot-landing"><span class="text-3xl font-black gradient-text text-glow">FWStudios</span></a></div>
+                <div><a href="chatbot-landing" class="gradient-bg text-white px-8 py-3 rounded-full hover:shadow-[0_0_30px_rgba(0,212,255,0.5)] transition-all duration-300 font-semibold">Zurück</a></div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="pt-40 pb-20 px-4">
+        <div class="max-w-4xl mx-auto">
+            <h1 id="page-title" class="text-5xl font-black text-white mb-8">AGB</h1>
+
+            <div class="bg-[#0f1629]/50 backdrop-blur-sm border border-[#00d4ff]/20 rounded-2xl p-8 space-y-6 text-gray-300">
+                <div id="page-content">
+                    <p class="text-gray-400">Laden...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load agb content from API
+        async function loadContent() {
+            try {
+                const page = await getLegalPage('agb');
+                if (page) {
+                    document.getElementById('page-title').textContent = page.title || 'AGB';
+                    document.getElementById('page-content').innerHTML = page.content || '<p class="text-gray-400">Kein Inhalt verfügbar</p>';
+                }
+            } catch (error) {
+                console.error('Error loading agb:', error);
+                document.getElementById('page-content').innerHTML = '<p class="text-red-400">Fehler beim Laden des Inhalts</p>';
+            }
+        }
+
+        // Load content on page load
+        loadContent();
+    </script>
+    <script src="api.js"></script>
+
+    <footer class="gradient-bg py-8 mt-20">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-white text-sm">&copy; 2025 FWStudios. Alle Rechte vorbehalten.</p>
+        </div>
+    </footer>
+</body>
+</html>

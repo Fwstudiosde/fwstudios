@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finanzen | FWStudios Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        body { background: #0a0e27; overflow-x: hidden; }
+        .gradient-bg { background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%); }
+        .gradient-text { background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .text-glow { text-shadow: 0 0 10px rgba(0, 212, 255, 0.5), 0 0 20px rgba(0, 212, 255, 0.3); }
+        .gradient-border { position: relative; background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 153, 255, 0.1)); border: 1px solid transparent; }
+        .gradient-border::before { content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 2px; background: linear-gradient(135deg, #00d4ff, #0099ff); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; opacity: 0.5; pointer-events: none; }
+        .modal { display: none; position: fixed; inset: 0; z-index: 50; background: rgba(0,0,0,0.8); }
+        .modal.active { display: flex; }
+    </style>
+</head>
+<body class="bg-[#0a0e27]">
+    <nav class="bg-[#0f1629] border-b border-gray-800 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div>
+                    <h1 class="text-2xl font-black gradient-text text-glow">FWStudios Admin</h1>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <a href="admin-dashboard" class="text-gray-400 hover:text-[#00d4ff] transition-colors">Leads</a>
+                    <a href="admin-finanzen" class="text-[#00d4ff] font-semibold">Finanzen</a>
+                    <a href="admin-settings" class="text-gray-400 hover:text-[#00d4ff] transition-colors">Einstellungen</a>
+                    <a href="admin-legal" class="text-gray-400 hover:text-[#00d4ff] transition-colors">Rechtliches</a>
+                    <span class="text-gray-400 text-sm" id="admin-email"></span>
+                    <button onclick="logout()" class="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-lg transition-all duration-300">
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Stats Cards -->
+        <div class="grid md:grid-cols-4 gap-6 mb-8">
+            <div class="gradient-border rounded-xl p-6 bg-[#0f1629]/50 backdrop-blur-sm">
+                <p class="text-gray-400 text-sm mb-1">MRR (Monthly Recurring Revenue)</p>
+                <p class="text-3xl font-bold text-white" id="stat-mrr">0€</p>
+                <p class="text-xs text-gray-500 mt-1">pro Monat</p>
+            </div>
+            <div class="gradient-border rounded-xl p-6 bg-[#0f1629]/50 backdrop-blur-sm">
+                <p class="text-gray-400 text-sm mb-1">ARR (Annual Recurring Revenue)</p>
+                <p class="text-3xl font-bold text-green-400" id="stat-arr">0€</p>
+                <p class="text-xs text-gray-500 mt-1">pro Jahr</p>
+            </div>
+            <div class="gradient-border rounded-xl p-6 bg-[#0f1629]/50 backdrop-blur-sm">
+                <p class="text-gray-400 text-sm mb-1">Aktive Kunden</p>
+                <p class="text-3xl font-bold text-blue-400" id="stat-active">0</p>
+            </div>
+            <div class="gradient-border rounded-xl p-6 bg-[#0f1629]/50 backdrop-blur-sm">
+                <p class="text-gray-400 text-sm mb-1">Gesamt Umsatz</p>
+                <p class="text-3xl font-bold text-purple-400" id="stat-total">0€</p>
+            </div>
+        </div>
+
+        <!-- Customers Table -->
+        <div class="gradient-border rounded-xl bg-[#0f1629]/50 backdrop-blur-sm overflow-hidden mb-8">
+            <div class="p-6 border-b border-gray-800 flex justify-between items-center">
+                <h2 class="text-2xl font-bold text-white">Kunden & Abonnements</h2>
+                <div class="flex space-x-2">
+                    <button onclick="openAddCustomerModal()" class="px-6 py-2 gradient-bg text-white rounded-lg text-sm font-semibold hover:shadow-lg transition-all">
+                        + Neuer Kunde
+                    </button>
+                    <button onclick="exportFinances()" class="px-4 py-2 bg-green-500/20 hover:bg-green-500/30 text-green-400 rounded-lg text-sm">Export CSV</button>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-[#0a0e27]">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase">Kunde</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase">Plan</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase">Preis/Monat</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase">Setup-Fee</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase">Startdatum</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase">Status</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase">Aktionen</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customers-table-body" class="divide-y divide-gray-800">
+                        <!-- Customers will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="no-customers" class="p-12 text-center hidden">
+                <svg class="w-16 h-16 text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <p class="text-gray-400 text-lg">Keine Kunden vorhanden</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Customer Modal -->
+    <div id="customer-modal" class="modal items-center justify-center">
+        <div class="bg-[#0f1629] rounded-2xl p-8 max-w-2xl w-full mx-4 border border-[#00d4ff]/30 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-white" id="modal-title">Neuer Kunde</h3>
+                <button onclick="closeCustomerModal()" class="text-gray-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <form id="customer-form" class="space-y-4">
+                <input type="hidden" id="customer-id">
+                <div>
+                    <label class="block text-gray-300 text-sm font-semibold mb-2">Lead auswählen oder manuell eingeben</label>
+                    <select id="lead-select" class="w-full px-4 py-3 rounded-lg bg-[#0a0e27] border border-gray-700 focus:border-[#00d4ff] outline-none text-white">
+                        <option value="">-- Neuer Kunde (manuell) --</option>
+                    </select>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2">Name *</label>
+                        <input type="text" id="customer-name" required class="w-full px-4 py-3 rounded-lg bg-[#0a0e27] border border-gray-700 focus:border-[#00d4ff] outline-none text-white" placeholder="Firma GmbH">
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2">E-Mail *</label>
+                        <input type="email" id="customer-email" required class="w-full px-4 py-3 rounded-lg bg-[#0a0e27] border border-gray-700 focus:border-[#00d4ff] outline-none text-white" placeholder="kunde@firma.de">
+                    </div>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2">Plan *</label>
+                        <select id="customer-plan" required class="w-full px-4 py-3 rounded-lg bg-[#0a0e27] border border-gray-700 focus:border-[#00d4ff] outline-none text-white" onchange="updatePlanPrice()">
+                            <option value="monthly">Monatlich (299€/Monat)</option>
+                            <option value="yearly">Jahresplan (250€/Monat)</option>
+                            <option value="custom">Individuell</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2">Preis/Monat (€) *</label>
+                        <input type="number" id="customer-price" required class="w-full px-4 py-3 rounded-lg bg-[#0a0e27] border border-gray-700 focus:border-[#00d4ff] outline-none text-white" placeholder="299" value="299">
+                    </div>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2">Setup-Fee (€)</label>
+                        <input type="number" id="customer-setup" class="w-full px-4 py-3 rounded-lg bg-[#0a0e27] border border-gray-700 focus:border-[#00d4ff] outline-none text-white" placeholder="499" value="499">
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2">Startdatum *</label>
+                        <input type="date" id="customer-start" required class="w-full px-4 py-3 rounded-lg bg-[#0a0e27] border border-gray-700 focus:border-[#00d4ff] outline-none text-white">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-gray-300 text-sm font-semibold mb-2">Status</label>
+                    <select id="customer-status" class="w-full px-4 py-3 rounded-lg bg-[#0a0e27] border border-gray-700 focus:border-[#00d4ff] outline-none text-white">
+                        <option value="active">Aktiv</option>
+                        <option value="paused">Pausiert</option>
+                        <option value="cancelled">Gekündigt</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-gray-300 text-sm font-semibold mb-2">Notizen</label>
+                    <textarea id="customer-notes" rows="3" class="w-full px-4 py-3 rounded-lg bg-[#0a0e27] border border-gray-700 focus:border-[#00d4ff] outline-none text-white" placeholder="Zusätzliche Informationen..."></textarea>
+                </div>
+                <div class="flex space-x-4 pt-4">
+                    <button type="submit" class="flex-1 gradient-bg text-white px-6 py-3 rounded-lg font-bold hover:shadow-lg transition-all">Speichern</button>
+                    <button type="button" onclick="closeCustomerModal()" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-bold transition-all">Abbrechen</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- View Customer Details Modal -->
+    <div id="view-modal" class="modal items-center justify-center">
+        <div class="bg-[#0f1629] rounded-2xl p-8 max-w-2xl w-full mx-4 border border-[#00d4ff]/30 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-white">Kunden Details</h3>
+                <button onclick="closeViewModal()" class="text-gray-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div id="customer-details-content" class="space-y-4 text-white">
+                <!-- Details will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if logged in
+        if (localStorage.getItem('adminLoggedIn') !== 'true') {
+            window.location.href = 'admin-login';
+        }
+
+        document.getElementById('admin-email').textContent = localStorage.getItem('adminEmail');
+
+        let editingCustomerId = null;
+
+        // Set default date to today
+        document.getElementById('customer-start').valueAsDate = new Date();
+
+        function logout() {
+            localStorage.removeItem('adminLoggedIn');
+            localStorage.removeItem('adminEmail');
+            window.location.href = 'admin-login';
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('de-DE', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('de-DE', {
+                style: 'currency',
+                currency: 'EUR',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(amount);
+        }
+
+        function getPlanBadge(plan) {
+            const badges = {
+                'monthly': '<span class="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-xs font-semibold">Monatlich</span>',
+                'yearly': '<span class="px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-xs font-semibold">Jahresplan</span>',
+                'custom': '<span class="px-3 py-1 bg-orange-500/20 text-orange-400 rounded-full text-xs font-semibold">Individuell</span>'
+            };
+            return badges[plan] || badges['custom'];
+        }
+
+        function getStatusBadge(status) {
+            const badges = {
+                'active': '<span class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-xs font-semibold">Aktiv</span>',
+                'paused': '<span class="px-3 py-1 bg-yellow-500/20 text-yellow-400 rounded-full text-xs font-semibold">Pausiert</span>',
+                'cancelled': '<span class="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-xs font-semibold">Gekündigt</span>'
+            };
+            return badges[status] || badges['active'];
+        }
+
+        function updatePlanPrice() {
+            const plan = document.getElementById('customer-plan').value;
+            const priceInput = document.getElementById('customer-price');
+
+            if (plan === 'monthly') {
+                priceInput.value = 299;
+                priceInput.readOnly = true;
+            } else if (plan === 'yearly') {
+                priceInput.value = 250;
+                priceInput.readOnly = true;
+            } else {
+                priceInput.value = '';
+                priceInput.readOnly = false;
+            }
+        }
+
+        async function loadLeadsIntoSelect() {
+            const leads = await getLeads();
+            const select = document.getElementById('lead-select');
+
+            // Clear existing options except first one
+            select.innerHTML = '<option value="">-- Neuer Kunde (manuell) --</option>';
+
+            // Add leads that are won or qualified
+            leads
+                .filter(lead => ['gewonnen', 'qualifiziert'].includes(lead.status))
+                .forEach(lead => {
+                    const option = document.createElement('option');
+                    option.value = lead.timestamp;
+                    option.textContent = `${lead.name || lead.email} (${lead.email})`;
+                    select.appendChild(option);
+                });
+        }
+
+        document.getElementById('lead-select').addEventListener('change', async function() {
+            const leadId = this.value;
+            if (!leadId) return;
+
+            const leads = await getLeads();
+            const lead = leads.find(l => l.timestamp == leadId);
+
+            if (lead) {
+                document.getElementById('customer-name').value = lead.name || '';
+                document.getElementById('customer-email').value = lead.email || '';
+            }
+        });
+
+        async function loadCustomers() {
+            const customers = await getCustomers();
+            const tableBody = document.getElementById('customers-table-body');
+            const noCustomers = document.getElementById('no-customers');
+
+            // Sort by start date (newest first)
+            customers.sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
+
+            if (customers.length === 0) {
+                tableBody.innerHTML = '';
+                noCustomers.classList.remove('hidden');
+                updateStats(customers);
+                return;
+            }
+
+            noCustomers.classList.add('hidden');
+
+            tableBody.innerHTML = customers.map(customer => `
+                <tr class="hover:bg-[#0a0e27]/50 transition-colors">
+                    <td class="px-6 py-4 text-sm">
+                        <div class="font-semibold text-white">${customer.name}</div>
+                        <div class="text-gray-400 text-xs">${customer.email}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">${getPlanBadge(customer.plan)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-white">${formatCurrency(customer.price)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">${customer.setupFee ? formatCurrency(customer.setupFee) : '-'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">${formatDate(customer.startDate)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">${getStatusBadge(customer.status)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <div class="flex space-x-2">
+                            <button onclick="viewCustomer(${customer.id})" class="text-blue-400 hover:text-blue-300" title="Details">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                            </button>
+                            <button onclick="editCustomer(${customer.id})" class="text-yellow-400 hover:text-yellow-300" title="Bearbeiten">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                            </button>
+                            <button onclick="deleteCustomerAction(${customer.id})" class="text-red-400 hover:text-red-300" title="Löschen">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+
+            updateStats(customers);
+        }
+
+        function updateStats(customers) {
+            const activeCustomers = customers.filter(c => c.status === 'active');
+
+            // Calculate MRR (Monthly Recurring Revenue)
+            const mrr = activeCustomers.reduce((sum, c) => sum + parseFloat(c.price), 0);
+
+            // Calculate ARR (Annual Recurring Revenue)
+            const arr = mrr * 12;
+
+            // Calculate total revenue (including setup fees)
+            const totalRevenue = customers.reduce((sum, c) => {
+                const monthlyTotal = c.status === 'active' ? parseFloat(c.price) : 0;
+                const setupFee = parseFloat(c.setupFee) || 0;
+                return sum + monthlyTotal + setupFee;
+            }, 0);
+
+            document.getElementById('stat-mrr').textContent = formatCurrency(mrr);
+            document.getElementById('stat-arr').textContent = formatCurrency(arr);
+            document.getElementById('stat-active').textContent = activeCustomers.length;
+            document.getElementById('stat-total').textContent = formatCurrency(totalRevenue);
+        }
+
+        function openAddCustomerModal() {
+            editingCustomerId = null;
+            document.getElementById('modal-title').textContent = 'Neuer Kunde';
+            document.getElementById('customer-form').reset();
+            document.getElementById('customer-start').valueAsDate = new Date();
+            document.getElementById('customer-price').value = 299;
+            document.getElementById('customer-setup').value = 499;
+            loadLeadsIntoSelect();
+            document.getElementById('customer-modal').classList.add('active');
+        }
+
+        function closeCustomerModal() {
+            document.getElementById('customer-modal').classList.remove('active');
+            editingCustomerId = null;
+        }
+
+        async function editCustomer(id) {
+            const customers = await getCustomers();
+            const customer = customers.find(c => c.id === id);
+            if (!customer) return;
+
+            editingCustomerId = id;
+            document.getElementById('modal-title').textContent = 'Kunde bearbeiten';
+            document.getElementById('customer-id').value = id;
+            document.getElementById('customer-name').value = customer.name;
+            document.getElementById('customer-email').value = customer.email;
+            document.getElementById('customer-plan').value = customer.plan;
+            document.getElementById('customer-price').value = customer.price;
+            document.getElementById('customer-setup').value = customer.setupFee || 0;
+            document.getElementById('customer-start').value = customer.startDate;
+            document.getElementById('customer-status').value = customer.status;
+            document.getElementById('customer-notes').value = customer.notes || '';
+
+            updatePlanPrice();
+            loadLeadsIntoSelect();
+            document.getElementById('customer-modal').classList.add('active');
+        }
+
+        async function viewCustomer(id) {
+            const customers = await getCustomers();
+            const customer = customers.find(c => c.id === id);
+            if (!customer) return;
+
+            const monthsSinceStart = Math.floor((new Date() - new Date(customer.startDate)) / (1000 * 60 * 60 * 24 * 30));
+            const totalPaid = (monthsSinceStart * parseFloat(customer.price)) + (parseFloat(customer.setupFee) || 0);
+
+            document.getElementById('customer-details-content').innerHTML = `
+                <div class="grid grid-cols-2 gap-4">
+                    <div><span class="text-gray-400">Name:</span><div class="font-semibold">${customer.name}</div></div>
+                    <div><span class="text-gray-400">E-Mail:</span><div class="font-semibold"><a href="mailto:${customer.email}" class="text-[#00d4ff] hover:underline">${customer.email}</a></div></div>
+                    <div><span class="text-gray-400">Plan:</span><div class="font-semibold">${getPlanBadge(customer.plan)}</div></div>
+                    <div><span class="text-gray-400">Preis/Monat:</span><div class="font-semibold text-2xl text-[#00d4ff]">${formatCurrency(customer.price)}</div></div>
+                    <div><span class="text-gray-400">Setup-Fee:</span><div class="font-semibold">${customer.setupFee ? formatCurrency(customer.setupFee) : '-'}</div></div>
+                    <div><span class="text-gray-400">Status:</span><div class="font-semibold">${getStatusBadge(customer.status)}</div></div>
+                    <div><span class="text-gray-400">Startdatum:</span><div class="font-semibold">${formatDate(customer.startDate)}</div></div>
+                    <div><span class="text-gray-400">Laufzeit:</span><div class="font-semibold">${monthsSinceStart} Monat${monthsSinceStart !== 1 ? 'e' : ''}</div></div>
+                </div>
+                <div class="pt-4 border-t border-gray-700">
+                    <div class="bg-gradient-to-br from-[#00d4ff]/20 to-[#0099ff]/20 border border-[#00d4ff]/50 rounded-xl p-6">
+                        <div class="text-center">
+                            <div class="text-gray-300 text-sm mb-2">Gesamt bezahlt (geschätzt)</div>
+                            <div class="text-4xl font-black text-white">${formatCurrency(totalPaid)}</div>
+                            <div class="text-gray-400 text-xs mt-1">Setup + ${monthsSinceStart} Monate à ${formatCurrency(customer.price)}</div>
+                        </div>
+                    </div>
+                </div>
+                ${customer.notes ? `
+                <div class="pt-4 border-t border-gray-700">
+                    <span class="text-gray-400 block mb-2">Notizen:</span>
+                    <div class="bg-[#0a0e27] p-4 rounded-lg">${customer.notes}</div>
+                </div>
+                ` : ''}
+                <div class="pt-4 flex space-x-3">
+                    <button onclick="editCustomer(${id}); closeViewModal();" class="flex-1 gradient-bg text-white px-6 py-3 rounded-lg font-bold hover:shadow-lg">Bearbeiten</button>
+                    <button onclick="closeViewModal()" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-bold">Schließen</button>
+                </div>
+            `;
+
+            document.getElementById('view-modal').classList.add('active');
+        }
+
+        function closeViewModal() {
+            document.getElementById('view-modal').classList.remove('active');
+        }
+
+        document.getElementById('customer-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const customerData = {
+                id: editingCustomerId || Date.now(),
+                name: document.getElementById('customer-name').value,
+                email: document.getElementById('customer-email').value,
+                plan: document.getElementById('customer-plan').value,
+                price: parseFloat(document.getElementById('customer-price').value),
+                setupFee: parseFloat(document.getElementById('customer-setup').value) || 0,
+                startDate: document.getElementById('customer-start').value,
+                status: document.getElementById('customer-status').value,
+                notes: document.getElementById('customer-notes').value
+            };
+
+            try {
+                if (editingCustomerId) {
+                    await updateCustomer(editingCustomerId, customerData);
+                } else {
+                    await createCustomer(customerData);
+                }
+                closeCustomerModal();
+                loadCustomers();
+            } catch (error) {
+                console.error('Error saving customer:', error);
+                alert('Fehler beim Speichern des Kunden');
+            }
+        });
+
+        async function deleteCustomerAction(id) {
+            if (confirm('Möchten Sie diesen Kunden wirklich löschen?')) {
+                try {
+                    await deleteCustomer(id);
+                    loadCustomers();
+                } catch (error) {
+                    console.error('Error deleting customer:', error);
+                }
+            }
+        }
+
+        async function exportFinances() {
+            const customers = await getCustomers();
+            if (customers.length === 0) {
+                alert('Keine Kunden zum Exportieren vorhanden');
+                return;
+            }
+
+            const csv = [
+                ['Name', 'E-Mail', 'Plan', 'Preis/Monat', 'Setup-Fee', 'Startdatum', 'Status', 'Notizen'].join(','),
+                ...customers.map(c => [
+                    c.name,
+                    c.email,
+                    c.plan,
+                    c.price,
+                    c.setupFee || 0,
+                    c.startDate,
+                    c.status,
+                    `"${(c.notes || '').replace(/"/g, '""')}"`
+                ].join(','))
+            ].join('\n');
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `finanzen-export-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+        }
+
+        // Load customers on page load
+        loadCustomers();
+    </script>
+    <script src="api.js"></script>
+</body>
+</html>

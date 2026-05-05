@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KI-Lösungen für Ihr Unternehmen | FWStudios</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        body { background: #0a0e27; overflow-x: hidden; }
+        .gradient-bg { background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%); }
+        .gradient-text { background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .animated-bg { position: fixed; width: 100%; height: 100%; top: 0; left: 0; z-index: 0; overflow: hidden; }
+        .animated-bg::before { content: ''; position: absolute; width: 200%; height: 200%; top: -50%; left: -50%; background: radial-gradient(circle, rgba(0, 212, 255, 0.1) 0%, transparent 50%); animation: rotate 20s linear infinite; }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .particle { position: fixed; width: 4px; height: 4px; background: #00d4ff; border-radius: 50%; opacity: 0.5; animation: float 10s infinite; pointer-events: none; }
+        @keyframes float { 0%, 100% { transform: translateY(0) translateX(0); opacity: 0; } 10% { opacity: 0.5; } 90% { opacity: 0.5; } 100% { transform: translateY(-100vh) translateX(100px); opacity: 0; } }
+        .reveal { opacity: 0; transform: translateY(100px); transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .reveal-scale { opacity: 0; transform: scale(0.8); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal-scale.active { opacity: 1; transform: scale(1); }
+        .card-3d { transform-style: preserve-3d; transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        .card-3d:hover { transform: translateY(-20px); box-shadow: 0 30px 60px rgba(0, 212, 255, 0.3); }
+        .text-glow { text-shadow: 0 0 10px rgba(0, 212, 255, 0.5), 0 0 20px rgba(0, 212, 255, 0.3), 0 0 30px rgba(0, 212, 255, 0.2); }
+        .gradient-border { position: relative; background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 153, 255, 0.1)); border: 1px solid transparent; }
+        .gradient-border::before { content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 2px; background: linear-gradient(135deg, #00d4ff, #0099ff); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; opacity: 0.5; }
+        .gradient-border:hover::before { opacity: 1; animation: border-glow 1.5s infinite; }
+        @keyframes border-glow { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .stagger-1 { animation-delay: 0.1s; } .stagger-2 { animation-delay: 0.2s; } .stagger-3 { animation-delay: 0.3s; } .stagger-4 { animation-delay: 0.4s; } .stagger-5 { animation-delay: 0.5s; } .stagger-6 { animation-delay: 0.6s; }
+    </style>
+</head>
+<body class="bg-[#0a0e27]">
+    <div class="animated-bg"></div>
+    <div id="particles"></div>
+    <nav class="fixed w-full top-0 z-50 border-b border-gray-800 backdrop-blur-sm bg-[#0a0e27]/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center"><a href="fwstudios-website"><img src="FwstudiosWeiss.png" alt="FWStudios" class="h-20"></a></div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="fwstudios-website" class="text-gray-300 hover:text-[#00d4ff] transition-all duration-300 font-medium">Home</a>
+                    <a href="chatbot-landing" class="text-gray-300 hover:text-[#00d4ff] transition-all duration-300 font-medium">Performance Marketing</a>
+                    <a href="ki-loesungen" class="text-gray-300 hover:text-[#00d4ff] transition-all duration-300 font-medium">KI-Lösungen</a>
+                    <a href="plattform-entwicklung" class="text-gray-300 hover:text-[#00d4ff] transition-all duration-300 font-medium">Plattform-Entwicklung</a>
+                </div>
+                <div><a href="#kontakt" class="gradient-bg text-white px-8 py-3 rounded-full hover:shadow-[0_0_30px_rgba(0,212,255,0.5)] transition-all duration-300 font-semibold">Beratung anfragen</a></div>
+            </div>
+        </div>
+    </nav>
+    <section class="relative pt-40 pb-32 px-4 overflow-hidden">
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="text-center max-w-4xl mx-auto">
+                <div class="inline-block px-6 py-3 bg-[#00d4ff]/10 border border-[#00d4ff]/30 rounded-full mb-8"><span class="text-[#00d4ff] text-sm font-semibold">🚀 KI-Gestützte Entwicklung</span></div>
+                <h1 class="text-6xl md:text-7xl font-black text-white mb-8 leading-tight">Maßgeschneiderte<br><span class="gradient-text text-glow">Software-Lösungen</span><br>für Ihr Business</h1>
+                <p class="text-xl md:text-2xl text-gray-400 mb-12 leading-relaxed">Von Automatisierung über API-Integrationen bis hin zu Custom Tools – wir entwickeln mit KI-Unterstützung schnell, effizient und präzise.</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                    <a href="#kontakt" class="gradient-bg text-white px-12 py-5 rounded-full font-bold hover:shadow-[0_0_40px_rgba(0,212,255,0.6)] transition-all duration-300 transform hover:scale-105 text-lg">Kostenlose Beratung</a>
+                    <a href="#loesungen" class="border-2 border-[#00d4ff] text-[#00d4ff] px-12 py-5 rounded-full font-bold hover:bg-[#00d4ff]/10 transition-all duration-300 text-lg">Unsere Lösungen</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="loesungen" class="py-32 relative">
+        <div class="max-w-7xl mx-auto px-4 relative z-10">
+            <div class="text-center mb-20 reveal"><div class="inline-block px-4 py-2 bg-[#00d4ff]/10 border border-[#00d4ff]/30 rounded-full mb-6"><span class="text-[#00d4ff] text-sm font-semibold">Was wir bieten</span></div><h2 class="text-5xl font-black text-white mb-6">Unsere Entwicklungs-Services</h2><p class="text-xl text-gray-400 max-w-2xl mx-auto">KI-gestützte Softwareentwicklung – von Automatisierung bis Custom Tools</p></div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="card-3d reveal-scale gradient-border bg-[#0f1629]/50 backdrop-blur-sm p-8 rounded-2xl group stagger-1">
+                    <div class="w-16 h-16 gradient-bg rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4 group-hover:text-[#00d4ff] transition-colors">KI-Chatbots</h3>
+                    <p class="text-gray-400 leading-relaxed mb-4">Intelligente Conversational AI, die Ihre Kunden 24/7 betreut, Anfragen beantwortet und Prozesse automatisiert. Steigern Sie Ihre Conversion-Rate und reduzieren Sie Support-Kosten.</p>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li>• 24/7 verfügbar ohne Personalkosten</li>
+                        <li>• Mehrsprachige Unterstützung</li>
+                        <li>• Nahtlose Website-Integration</li>
+                        <li>• Lead-Generierung & Qualifizierung</li>
+                        <li>• Individuell trainierbar auf Ihr Business</li>
+                    </ul>
+                    <div class="mt-6">
+                        <a href="chatbot-landing" class="inline-flex items-center text-[#00d4ff] font-semibold hover:gap-2 transition-all group/link">
+                            Mehr erfahren
+                            <svg class="w-5 h-5 ml-2 group-hover/link:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="card-3d reveal-scale gradient-border bg-[#0f1629]/50 backdrop-blur-sm p-8 rounded-2xl group stagger-2">
+                    <div class="w-16 h-16 gradient-bg rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4 group-hover:text-[#00d4ff] transition-colors">Workflow-Automatisierung</h3>
+                    <p class="text-gray-400 leading-relaxed mb-4">Automatisieren Sie wiederkehrende Aufgaben und Geschäftsprozesse für maximale Effizienz.</p>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li>• E-Mail-Automatisierung</li>
+                        <li>• Dokumenten-Processing</li>
+                        <li>• Task-Scheduler & Cron-Jobs</li>
+                        <li>• Benachrichtigungssysteme</li>
+                    </ul>
+                </div>
+                <div class="card-3d reveal-scale gradient-border bg-[#0f1629]/50 backdrop-blur-sm p-8 rounded-2xl group stagger-2">
+                    <div class="w-16 h-16 gradient-bg rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4 group-hover:text-[#00d4ff] transition-colors">API-Integrationen</h3>
+                    <p class="text-gray-400 leading-relaxed mb-4">Verbinden Sie verschiedene Systeme und Services nahtlos miteinander.</p>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li>• REST & GraphQL APIs</li>
+                        <li>• Drittanbieter-Integrationen</li>
+                        <li>• Webhook-Systeme</li>
+                        <li>• Payment-Gateway-Integration</li>
+                    </ul>
+                </div>
+                <div class="card-3d reveal-scale gradient-border bg-[#0f1629]/50 backdrop-blur-sm p-8 rounded-2xl group stagger-3">
+                    <div class="w-16 h-16 gradient-bg rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4 group-hover:text-[#00d4ff] transition-colors">Custom Dashboards & Analytics</h3>
+                    <p class="text-gray-400 leading-relaxed mb-4">Visualisieren Sie Ihre Daten mit interaktiven Dashboards und Reports.</p>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li>• Echtzeit-Datenvisualisierung</li>
+                        <li>• Business Intelligence Tools</li>
+                        <li>• KPI-Tracking Dashboards</li>
+                        <li>• Export & Reporting</li>
+                    </ul>
+                </div>
+                <div class="card-3d reveal-scale gradient-border bg-[#0f1629]/50 backdrop-blur-sm p-8 rounded-2xl group stagger-4">
+                    <div class="w-16 h-16 gradient-bg rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4 group-hover:text-[#00d4ff] transition-colors">E-Commerce Lösungen</h3>
+                    <p class="text-gray-400 leading-relaxed mb-4">Vollständige Online-Shop Lösungen mit Payment, Warenwirtschaft und mehr.</p>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li>• Shop-Systeme & Produktkataloge</li>
+                        <li>• Warenkorb & Checkout</li>
+                        <li>• Zahlungsintegration</li>
+                        <li>• Bestellverwaltung</li>
+                    </ul>
+                </div>
+                <div class="card-3d reveal-scale gradient-border bg-[#0f1629]/50 backdrop-blur-sm p-8 rounded-2xl group stagger-5">
+                    <div class="w-16 h-16 gradient-bg rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4 group-hover:text-[#00d4ff] transition-colors">Business Tools & Skripte</h3>
+                    <p class="text-gray-400 leading-relaxed mb-4">Maßgeschneiderte Tools und Automatisierungsskripte für Ihre spezifischen Anforderungen.</p>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li>• Custom CLI-Tools</li>
+                        <li>• Batch-Processing Skripte</li>
+                        <li>• Web Scraping Tools</li>
+                        <li>• Daten-Validierung & Cleanup</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="py-32 gradient-bg relative overflow-hidden">
+        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMC41IiBvcGFjaXR5PSIwLjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-20"></div>
+        <div class="max-w-7xl mx-auto px-4 relative z-10">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-5xl font-black text-white mb-6">Wie wir arbeiten</h2>
+                <p class="text-xl text-white/80 max-w-2xl mx-auto">KI-gestützte Entwicklung für schnelle, präzise Ergebnisse</p>
+            </div>
+            <div class="grid md:grid-cols-4 gap-8 text-white">
+                <div class="reveal-scale text-center">
+                    <div class="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4 text-3xl font-black">1</div>
+                    <h4 class="font-bold text-lg mb-2">Anforderungsanalyse</h4>
+                    <p class="text-white/80 text-sm">Wir verstehen Ihre Bedürfnisse und definieren klare Projektziele</p>
+                </div>
+                <div class="reveal-scale text-center">
+                    <div class="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4 text-3xl font-black">2</div>
+                    <h4 class="font-bold text-lg mb-2">Schnelle Entwicklung</h4>
+                    <p class="text-white/80 text-sm">KI-unterstützte Programmierung für effiziente Umsetzung</p>
+                </div>
+                <div class="reveal-scale text-center">
+                    <div class="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4 text-3xl font-black">3</div>
+                    <h4 class="font-bold text-lg mb-2">Testing & Deployment</h4>
+                    <p class="text-white/80 text-sm">Gründliche Tests und professionelles Go-Live</p>
+                </div>
+                <div class="reveal-scale text-center">
+                    <div class="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4 text-3xl font-black">4</div>
+                    <h4 class="font-bold text-lg mb-2">Support & Wartung</h4>
+                    <p class="text-white/80 text-sm">Kontinuierlicher Support und Weiterentwicklung</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="kontakt" class="py-32 relative">
+        <div class="max-w-4xl mx-auto px-4 text-center relative z-10">
+            <div class="reveal gradient-border rounded-3xl p-16 bg-[#0f1629]/80 backdrop-blur-sm">
+                <h2 class="text-5xl font-black text-white mb-8">Bereit für Ihre individuelle Lösung?</h2>
+                <p class="text-xl text-gray-400 mb-12 leading-relaxed">Vereinbaren Sie ein kostenloses Beratungsgespräch und lassen Sie uns über Ihr Projekt sprechen.</p>
+                <form id="ki-loesungen-form" class="mb-8">
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+                        <input type="text" id="name-ki" name="name" placeholder="Ihr Name" class="px-8 py-5 rounded-full bg-[#0f1629]/50 border-2 border-[#00d4ff]/30 focus:border-[#00d4ff] outline-none w-full sm:w-auto min-w-[300px] text-white placeholder-gray-500 backdrop-blur-sm transition-all duration-300">
+                        <input type="email" id="email-ki" name="email" required placeholder="Ihre E-Mail-Adresse" class="px-8 py-5 rounded-full bg-[#0f1629]/50 border-2 border-[#00d4ff]/30 focus:border-[#00d4ff] outline-none w-full sm:w-auto min-w-[300px] text-white placeholder-gray-500 backdrop-blur-sm transition-all duration-300">
+                    </div>
+                    <button type="submit" class="gradient-bg text-white px-12 py-5 rounded-full font-bold hover:shadow-[0_0_40px_rgba(0,212,255,0.6)] transition-all duration-300 transform hover:scale-105 text-lg mb-6">Kostenlose Beratung anfragen</button>
+                </form>
+                <div id="success-message-ki" class="hidden mb-6 p-4 bg-green-500/20 border border-green-500/50 rounded-lg text-green-400">
+                    ✓ Vielen Dank! Wir melden uns in Kürze bei Ihnen.
+                </div>
+                <p class="text-sm text-gray-500">In weniger als 48 Stunden melden wir uns bei Ihnen</p>
+            </div>
+        </div>
+    </section>
+    <footer class="gradient-bg relative overflow-hidden py-16">
+        <div class="max-w-7xl mx-auto px-4 relative z-10">
+            <div class="grid md:grid-cols-4 gap-8 mb-12">
+                <div>
+                    <h3 class="text-2xl font-black text-white mb-4 text-glow">FWStudios</h3>
+                    <p class="text-gray-300 mb-4">Software-Lösungen mit KI entwickelt</p>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4">Services</h4>
+                    <ul class="space-y-2 text-gray-300 text-sm">
+                        <li><a href="chatbot-landing" class="hover:text-[#00d4ff] transition-colors">KI-Chatbots</a></li>
+                        <li><a href="ki-loesungen" class="hover:text-[#00d4ff] transition-colors">KI-Lösungen</a></li>
+                        <li><a href="plattform-entwicklung" class="hover:text-[#00d4ff] transition-colors">Plattform-Entwicklung</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4">Unternehmen</h4>
+                    <ul class="space-y-2 text-gray-300 text-sm">
+                        <li><a href="fwstudios-website#about" class="hover:text-[#00d4ff] transition-colors">Über uns</a></li>
+                        <li><a href="#kontakt" class="hover:text-[#00d4ff] transition-colors">Kontakt</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4">Rechtliches</h4>
+                    <ul class="space-y-2 text-gray-300 text-sm">
+                        <li><a href="impressum" class="hover:text-[#00d4ff] transition-colors">Impressum</a></li>
+                        <li><a href="datenschutz" class="hover:text-[#00d4ff] transition-colors">Datenschutzerklärung</a></li>
+                        <li><a href="agb" class="hover:text-[#00d4ff] transition-colors">AGB</a></li>
+                        <li><a href="widerruf" class="hover:text-[#00d4ff] transition-colors">Widerrufsrecht</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-white/20 pt-8 text-center text-gray-300 text-sm">
+                <p>&copy; 2025 FWStudios. Alle Rechte vorbehalten.</p>
+            </div>
+        </div>
+    </footer>
+    <script>
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 50; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 10 + 's';
+            particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+            particlesContainer.appendChild(particle);
+        }
+        const revealElements = document.querySelectorAll('.reveal, .reveal-scale');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+        revealElements.forEach(element => { revealObserver.observe(element); });
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+        const nav = document.querySelector('nav');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                nav.style.backdropFilter = 'blur(20px)';
+                nav.style.background = 'rgba(10, 14, 39, 0.95)';
+            } else {
+                nav.style.backdropFilter = 'blur(10px)';
+                nav.style.background = 'rgba(10, 14, 39, 0.8)';
+            }
+        });
+
+        // Handle form submission
+        document.getElementById('ki-loesungen-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('name-ki').value;
+            const email = document.getElementById('email-ki').value;
+
+            // Create lead object
+            const lead = {
+                source: 'ki-loesungen',
+                name: name,
+                email: email,
+                website: '',
+                phone: '',
+                status: 'neu',
+                notes: '',
+                links: []
+            };
+
+            // Save lead to backend via API
+            try {
+                await createLead(lead);
+            } catch (error) {
+                console.error('Failed to save lead:', error);
+            }
+
+            // Show success message
+            document.getElementById('success-message-ki').classList.remove('hidden');
+
+            // Reset form
+            this.reset();
+
+            // Hide success message after 5 seconds
+            setTimeout(() => {
+                document.getElementById('success-message-ki').classList.add('hidden');
+            }, 5000);
+        });
+    </script>
+    <script src="api.js"></script>
+</body>
+</html>

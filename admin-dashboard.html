@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | FWStudios</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        body { background: #0a0e27; overflow-x: hidden; }
+        .gradient-bg { background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%); }
+        .gradient-text { background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .text-glow { text-shadow: 0 0 10px rgba(0, 212, 255, 0.5), 0 0 20px rgba(0, 212, 255, 0.3); }
+        .gradient-border { position: relative; background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 153, 255, 0.1)); border: 1px solid transparent; }
+        .gradient-border::before { content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 2px; background: linear-gradient(135deg, #00d4ff, #0099ff); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; opacity: 0.5; pointer-events: none; }
+        .modal { display: none; position: fixed; inset: 0; z-index: 50; background: rgba(0,0,0,0.8); }
+        .modal.active { display: flex; }
+    </style>
+</head>
+<body class="bg-[#0a0e27]">
+    <nav class="bg-[#0f1629] border-b border-gray-800 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div>
+                    <h1 class="text-2xl font-black gradient-text text-glow">FWStudios Admin</h1>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <a href="admin-dashboard" class="text-[#00d4ff] font-semibold">Leads</a>
+                    <a href="admin-finanzen" class="text-gray-400 hover:text-[#00d4ff] transition-colors">Finanzen</a>
+                    <a href="admin-settings" class="text-gray-400 hover:text-[#00d4ff] transition-colors">Einstellungen</a>
+                    <a href="admin-legal" class="text-gray-400 hover:text-[#00d4ff] transition-colors">Rechtliches</a>
+                    <span class="text-gray-400 text-sm" id="admin-email"></span>
+                    <button onclick="logout()" class="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-lg transition-all duration-300">
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Stats Cards -->
+        <div class="grid md:grid-cols-5 gap-6 mb-8">
+            <div class="gradient-border rounded-xl p-6 bg-[#0f1629]/50 backdrop-blur-sm">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-400 text-sm mb-1">Gesamt</p>
+                        <p class="text-3xl font-bold text-white" id="total-leads">0</p>
+                    </div>
+                    <div class="w-12 h-12 gradient-bg rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    </div>
+                </div>
+            </div>
+            <div class="gradient-border rounded-xl p-6 bg-[#0f1629]/50 backdrop-blur-sm">
+                <p class="text-gray-400 text-sm mb-1">Neu</p>
+                <p class="text-3xl font-bold text-blue-400" id="status-neu">0</p>
+            </div>
+            <div class="gradient-border rounded-xl p-6 bg-[#0f1629]/50 backdrop-blur-sm">
+                <p class="text-gray-400 text-sm mb-1">Kontaktiert</p>
+                <p class="text-3xl font-bold text-yellow-400" id="status-kontaktiert">0</p>
+            </div>
+            <div class="gradient-border rounded-xl p-6 bg-[#0f1629]/50 backdrop-blur-sm">
+                <p class="text-gray-400 text-sm mb-1">Qualifiziert</p>
+                <p class="text-3xl font-bold text-purple-400" id="status-qualifiziert">0</p>
+            </div>
+            <div class="gradient-border rounded-xl p-6 bg-[#0f1629]/50 backdrop-blur-sm">
+                <p class="text-gray-400 text-sm mb-1">Gewonnen</p>
+                <p class="text-3xl font-bold text-green-400" id="status-gewonnen">0</p>
+            </div>
+        </div>
+
+        <!-- Leads Table -->
+        <div class="gradient-border rounded-xl bg-[#0f1629]/50 backdrop-blur-sm overflow-hidden">
+            <div class="p-6 border-b border-gray-800 flex justify-between items-center">
+                <h2 class="text-2xl font-bold text-white">Lead Management</h2>
+                <div class="flex space-x-2">
+                    <button onclick="openAddLeadModal()" class="px-6 py-2 gradient-bg text-white rounded-lg text-sm font-semibold hover:shadow-lg transition-all">
+                        + Neuer Lead
+                    </button>
+                    <button onclick="filterLeads('all')" id="filter-all" class="px-4 py-2 bg-[#00d4ff] text-white rounded-lg text-sm font-semibold">Alle</button>
+                    <button onclick="filterLeads('chatbot')" id="filter-chatbot" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg text-sm">Chatbot</button>
+                    <button onclick="filterLeads('ki-loesungen')" id="filter-ki-loesungen" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg text-sm">KI-Lösungen</button>
+                    <button onclick="filterLeads('plattform')" id="filter-plattform" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg text-sm">Plattform</button>
+                    <button onclick="filterLeads('manual')" id="filter-manual" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg text-sm">Manuell</button>
+                    <button onclick="exportLeads()" class="px-4 py-2 bg-green-500/20 hover:bg-green-500/30 text-green-400 rounded-lg text-sm">Export CSV</button>
+                    <button onclick="clearAllLeadsAction()" class="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-lg text-sm">Alle löschen</button>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-[#0a0e27]">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase">Datum</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase">Status</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase">Quelle</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase">Name</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase">E-Mail</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase">Website</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase">Notizen</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase">Aktionen</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leads-table-body" class="divide-y divide-gray-800">
+                        <!-- Leads will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="no-leads" class="p-12 text-center hidden">
+                <svg class="w-16 h-16 text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+                <p class="text-gray-400 text-lg">Keine Leads gefunden</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Lead Modal -->
+    <div id="lead-modal" class="modal items-center justify-center">
+        <div class="bg-[#0f1629] rounded-2xl p-8 max-w-2xl w-full mx-4 border border-[#00d4ff]/30 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-white" id="modal-title">Neuer Lead</h3>
+                <button onclick="closeLeadModal()" class="text-gray-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <form id="lead-form" class="space-y-4">
+                <input type="hidden" id="lead-id">
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2">Name</label>
+                        <input type="text" id="lead-name" class="w-full px-4 py-3 rounded-lg bg-[#0a0e27] border border-gray-700 focus:border-[#00d4ff] outline-none text-white" placeholder="Max Mustermann">
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2">E-Mail *</label>
+                        <input type="email" id="lead-email" required class="w-full px-4 py-3 rounded-lg bg-[#0a0e27] border border-gray-700 focus:border-[#00d4ff] outline-none text-white" placeholder="max@example.com">
+                    </div>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2">Website</label>
+                        <input type="text" id="lead-website" class="w-full px-4 py-3 rounded-lg bg-[#0a0e27] border border-gray-700 focus:border-[#00d4ff] outline-none text-white" placeholder="https://example.com">
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2">Telefon</label>
+                        <input type="tel" id="lead-phone" class="w-full px-4 py-3 rounded-lg bg-[#0a0e27] border border-gray-700 focus:border-[#00d4ff] outline-none text-white" placeholder="+49 123 456789">
+                    </div>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2">Status</label>
+                        <select id="lead-status" class="w-full px-4 py-3 rounded-lg bg-[#0a0e27] border border-gray-700 focus:border-[#00d4ff] outline-none text-white">
+                            <option value="neu">Neu</option>
+                            <option value="kontaktiert">Kontaktiert</option>
+                            <option value="qualifiziert">Qualifiziert</option>
+                            <option value="gewonnen">Gewonnen</option>
+                            <option value="verloren">Verloren</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2">Quelle</label>
+                        <select id="lead-source" class="w-full px-4 py-3 rounded-lg bg-[#0a0e27] border border-gray-700 focus:border-[#00d4ff] outline-none text-white">
+                            <option value="manual">Manuell</option>
+                            <option value="chatbot">Chatbot</option>
+                            <option value="ki-loesungen">KI-Lösungen</option>
+                            <option value="plattform">Plattform</option>
+                            <option value="homepage">Homepage</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-gray-300 text-sm font-semibold mb-2">Notizen</label>
+                    <textarea id="lead-notes" rows="4" class="w-full px-4 py-3 rounded-lg bg-[#0a0e27] border border-gray-700 focus:border-[#00d4ff] outline-none text-white" placeholder="Zusätzliche Informationen, Gesprächsnotizen..."></textarea>
+                </div>
+                <div>
+                    <label class="block text-gray-300 text-sm font-semibold mb-2">Links (ein Link pro Zeile)</label>
+                    <textarea id="lead-links" rows="3" class="w-full px-4 py-3 rounded-lg bg-[#0a0e27] border border-gray-700 focus:border-[#00d4ff] outline-none text-white" placeholder="https://example.com/projekt&#10;https://linkedin.com/in/..."></textarea>
+                </div>
+                <div class="flex space-x-4 pt-4">
+                    <button type="submit" class="flex-1 gradient-bg text-white px-6 py-3 rounded-lg font-bold hover:shadow-lg transition-all">Speichern</button>
+                    <button type="button" onclick="closeLeadModal()" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-bold transition-all">Abbrechen</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- View Lead Details Modal -->
+    <div id="view-modal" class="modal items-center justify-center">
+        <div class="bg-[#0f1629] rounded-2xl p-8 max-w-2xl w-full mx-4 border border-[#00d4ff]/30 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-white">Lead Details</h3>
+                <button onclick="closeViewModal()" class="text-gray-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div id="lead-details-content" class="space-y-4 text-white">
+                <!-- Details will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if logged in
+        if (localStorage.getItem('adminLoggedIn') !== 'true') {
+            window.location.href = 'admin-login';
+        }
+
+        document.getElementById('admin-email').textContent = localStorage.getItem('adminEmail');
+
+        let currentFilter = 'all';
+        let editingLeadId = null;
+
+        function logout() {
+            localStorage.removeItem('adminLoggedIn');
+            localStorage.removeItem('adminEmail');
+            window.location.href = 'admin-login';
+        }
+
+        function formatDate(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleString('de-DE', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function getSourceBadge(source) {
+            const badges = {
+                'chatbot': '<span class="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-xs font-semibold">Chatbot</span>',
+                'ki-loesungen': '<span class="px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-xs font-semibold">KI-Lösungen</span>',
+                'plattform': '<span class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-xs font-semibold">Plattform</span>',
+                'homepage': '<span class="px-3 py-1 bg-cyan-500/20 text-cyan-400 rounded-full text-xs font-semibold">Homepage</span>',
+                'manual': '<span class="px-3 py-1 bg-orange-500/20 text-orange-400 rounded-full text-xs font-semibold">Manuell</span>'
+            };
+            return badges[source] || badges['homepage'];
+        }
+
+        function getStatusBadge(status) {
+            const badges = {
+                'neu': '<span class="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-xs font-semibold">Neu</span>',
+                'kontaktiert': '<span class="px-3 py-1 bg-yellow-500/20 text-yellow-400 rounded-full text-xs font-semibold">Kontaktiert</span>',
+                'qualifiziert': '<span class="px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-xs font-semibold">Qualifiziert</span>',
+                'gewonnen': '<span class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-xs font-semibold">Gewonnen</span>',
+                'verloren': '<span class="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-xs font-semibold">Verloren</span>'
+            };
+            return badges[status] || badges['neu'];
+        }
+
+        async function updateStatusBadge(leadId, newStatus) {
+            try {
+                const leads = await getLeads();
+                const lead = leads.find(l => l.timestamp === leadId);
+                if (lead) {
+                    lead.status = newStatus;
+                    await updateLead(leadId, lead);
+                    loadLeads();
+                }
+            } catch (error) {
+                console.error('Error updating status:', error);
+            }
+        }
+
+        async function loadLeads() {
+            const leads = await getLeads();
+            const tableBody = document.getElementById('leads-table-body');
+            const noLeads = document.getElementById('no-leads');
+
+            // Filter leads
+            let filteredLeads = leads;
+            if (currentFilter !== 'all') {
+                filteredLeads = leads.filter(lead => lead.source === currentFilter);
+            }
+
+            // Sort by date (newest first)
+            filteredLeads.sort((a, b) => b.timestamp - a.timestamp);
+
+            if (filteredLeads.length === 0) {
+                tableBody.innerHTML = '';
+                noLeads.classList.remove('hidden');
+                updateStats(leads);
+                return;
+            }
+
+            noLeads.classList.add('hidden');
+
+            tableBody.innerHTML = filteredLeads.map(lead => `
+                <tr class="hover:bg-[#0a0e27]/50 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">${formatDate(lead.timestamp)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <select onchange="updateStatusBadge(${lead.timestamp}, this.value)" class="bg-transparent border-0 cursor-pointer text-sm">
+                            <option value="neu" ${lead.status === 'neu' ? 'selected' : ''}>Neu</option>
+                            <option value="kontaktiert" ${lead.status === 'kontaktiert' ? 'selected' : ''}>Kontaktiert</option>
+                            <option value="qualifiziert" ${lead.status === 'qualifiziert' ? 'selected' : ''}>Qualifiziert</option>
+                            <option value="gewonnen" ${lead.status === 'gewonnen' ? 'selected' : ''}>Gewonnen</option>
+                            <option value="verloren" ${lead.status === 'verloren' ? 'selected' : ''}>Verloren</option>
+                        </select>
+                        ${getStatusBadge(lead.status || 'neu')}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">${getSourceBadge(lead.source)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-white font-semibold">${lead.name || '-'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                        <a href="mailto:${lead.email}" class="text-[#00d4ff] hover:underline">${lead.email}</a>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                        ${lead.website ? `<a href="${lead.website}" target="_blank" class="text-[#00d4ff] hover:underline">${lead.website.substring(0, 30)}...</a>` : '-'}
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-400">
+                        ${lead.notes ? `<div class="max-w-xs truncate">${lead.notes.substring(0, 50)}${lead.notes.length > 50 ? '...' : ''}</div>` : '-'}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <div class="flex space-x-2">
+                            <button onclick="viewLead(${lead.timestamp})" class="text-blue-400 hover:text-blue-300" title="Details">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                            </button>
+                            <button onclick="editLead(${lead.timestamp})" class="text-yellow-400 hover:text-yellow-300" title="Bearbeiten">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                            </button>
+                            <button onclick="deleteLeadAction(${lead.timestamp})" class="text-red-400 hover:text-red-300" title="Löschen">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+
+            updateStats(leads);
+        }
+
+        function updateStats(leads) {
+            const statusCounts = {
+                neu: 0,
+                kontaktiert: 0,
+                qualifiziert: 0,
+                gewonnen: 0,
+                verloren: 0
+            };
+
+            leads.forEach(lead => {
+                const status = lead.status || 'neu';
+                if (statusCounts.hasOwnProperty(status)) {
+                    statusCounts[status]++;
+                }
+            });
+
+            document.getElementById('total-leads').textContent = leads.length;
+            document.getElementById('status-neu').textContent = statusCounts.neu;
+            document.getElementById('status-kontaktiert').textContent = statusCounts.kontaktiert;
+            document.getElementById('status-qualifiziert').textContent = statusCounts.qualifiziert;
+            document.getElementById('status-gewonnen').textContent = statusCounts.gewonnen;
+        }
+
+        function openAddLeadModal() {
+            editingLeadId = null;
+            document.getElementById('modal-title').textContent = 'Neuer Lead';
+            document.getElementById('lead-form').reset();
+            document.getElementById('lead-source').value = 'manual';
+            document.getElementById('lead-modal').classList.add('active');
+        }
+
+        function closeLeadModal() {
+            document.getElementById('lead-modal').classList.remove('active');
+            editingLeadId = null;
+        }
+
+        async function editLead(timestamp) {
+            const leads = await getLeads();
+            const lead = leads.find(l => l.timestamp === timestamp);
+            if (!lead) return;
+
+            editingLeadId = timestamp;
+            document.getElementById('modal-title').textContent = 'Lead bearbeiten';
+            document.getElementById('lead-id').value = timestamp;
+            document.getElementById('lead-name').value = lead.name || '';
+            document.getElementById('lead-email').value = lead.email || '';
+            document.getElementById('lead-website').value = lead.website || '';
+            document.getElementById('lead-phone').value = lead.phone || '';
+            document.getElementById('lead-status').value = lead.status || 'neu';
+            document.getElementById('lead-source').value = lead.source || 'manual';
+            document.getElementById('lead-notes').value = lead.notes || '';
+            document.getElementById('lead-links').value = lead.links ? lead.links.join('\n') : '';
+            document.getElementById('lead-modal').classList.add('active');
+        }
+
+        async function viewLead(timestamp) {
+            const leads = await getLeads();
+            const lead = leads.find(l => l.timestamp === timestamp);
+            if (!lead) return;
+
+            const linksHtml = lead.links && lead.links.length > 0
+                ? lead.links.map(link => `<a href="${link}" target="_blank" class="text-[#00d4ff] hover:underline block">${link}</a>`).join('')
+                : '<span class="text-gray-500">Keine Links</span>';
+
+            document.getElementById('lead-details-content').innerHTML = `
+                <div class="grid grid-cols-2 gap-4">
+                    <div><span class="text-gray-400">Name:</span><div class="font-semibold">${lead.name || '-'}</div></div>
+                    <div><span class="text-gray-400">E-Mail:</span><div class="font-semibold"><a href="mailto:${lead.email}" class="text-[#00d4ff] hover:underline">${lead.email}</a></div></div>
+                    <div><span class="text-gray-400">Website:</span><div class="font-semibold">${lead.website ? `<a href="${lead.website}" target="_blank" class="text-[#00d4ff] hover:underline">${lead.website}</a>` : '-'}</div></div>
+                    <div><span class="text-gray-400">Telefon:</span><div class="font-semibold">${lead.phone || '-'}</div></div>
+                    <div><span class="text-gray-400">Status:</span><div class="font-semibold">${getStatusBadge(lead.status || 'neu')}</div></div>
+                    <div><span class="text-gray-400">Quelle:</span><div class="font-semibold">${getSourceBadge(lead.source)}</div></div>
+                    <div><span class="text-gray-400">Erstellt am:</span><div class="font-semibold">${formatDate(lead.timestamp)}</div></div>
+                </div>
+                <div class="pt-4 border-t border-gray-700">
+                    <span class="text-gray-400 block mb-2">Notizen:</span>
+                    <div class="bg-[#0a0e27] p-4 rounded-lg">${lead.notes || '<span class="text-gray-500">Keine Notizen</span>'}</div>
+                </div>
+                <div class="pt-4 border-t border-gray-700">
+                    <span class="text-gray-400 block mb-2">Links:</span>
+                    <div class="bg-[#0a0e27] p-4 rounded-lg">${linksHtml}</div>
+                </div>
+                <div class="pt-4 flex space-x-3">
+                    <button onclick="editLead(${timestamp}); closeViewModal();" class="flex-1 gradient-bg text-white px-6 py-3 rounded-lg font-bold hover:shadow-lg">Bearbeiten</button>
+                    <button onclick="closeViewModal()" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-bold">Schließen</button>
+                </div>
+            `;
+
+            document.getElementById('view-modal').classList.add('active');
+        }
+
+        function closeViewModal() {
+            document.getElementById('view-modal').classList.remove('active');
+        }
+
+        document.getElementById('lead-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const leadData = {
+                timestamp: editingLeadId || Date.now(),
+                name: document.getElementById('lead-name').value,
+                email: document.getElementById('lead-email').value,
+                website: document.getElementById('lead-website').value,
+                phone: document.getElementById('lead-phone').value,
+                status: document.getElementById('lead-status').value,
+                source: document.getElementById('lead-source').value,
+                notes: document.getElementById('lead-notes').value,
+                links: document.getElementById('lead-links').value.split('\n').filter(l => l.trim())
+            };
+
+            try {
+                if (editingLeadId) {
+                    await updateLead(editingLeadId, leadData);
+                } else {
+                    await createLead(leadData);
+                }
+                closeLeadModal();
+                loadLeads();
+            } catch (error) {
+                console.error('Error saving lead:', error);
+                alert('Fehler beim Speichern des Leads');
+            }
+        });
+
+        async function deleteLeadAction(timestamp) {
+            if (confirm('Möchten Sie diesen Lead wirklich löschen?')) {
+                try {
+                    await deleteLead(timestamp);
+                    loadLeads();
+                } catch (error) {
+                    console.error('Error deleting lead:', error);
+                }
+            }
+        }
+
+        async function clearAllLeadsAction() {
+            if (confirm('Möchten Sie wirklich ALLE Leads löschen? Diese Aktion kann nicht rückgängig gemacht werden!')) {
+                try {
+                    await clearAllLeads();
+                    loadLeads();
+                } catch (error) {
+                    console.error('Error clearing leads:', error);
+                }
+            }
+        }
+
+        function filterLeads(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('[id^="filter-"]').forEach(btn => {
+                btn.classList.remove('bg-[#00d4ff]');
+                btn.classList.add('bg-gray-700', 'hover:bg-gray-600');
+            });
+            document.getElementById(`filter-${filter}`).classList.remove('bg-gray-700', 'hover:bg-gray-600');
+            document.getElementById(`filter-${filter}`).classList.add('bg-[#00d4ff]');
+            loadLeads();
+        }
+
+        async function exportLeads() {
+            const leads = await getLeads();
+            if (leads.length === 0) {
+                alert('Keine Leads zum Exportieren vorhanden');
+                return;
+            }
+
+            const csv = [
+                ['Datum', 'Status', 'Quelle', 'Name', 'E-Mail', 'Website', 'Telefon', 'Notizen', 'Links'].join(','),
+                ...leads.map(lead => [
+                    formatDate(lead.timestamp),
+                    lead.status || 'neu',
+                    lead.source,
+                    lead.name || '',
+                    lead.email,
+                    lead.website || '',
+                    lead.phone || '',
+                    `"${(lead.notes || '').replace(/"/g, '""')}"`,
+                    lead.links ? lead.links.join('; ') : ''
+                ].join(','))
+            ].join('\n');
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `leads-export-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+        }
+
+        // Load leads on page load
+        loadLeads();
+
+        // Refresh leads every 10 seconds
+        setInterval(loadLeads, 10000);
+    </script>
+    <script src="api.js"></script>
+</body>
+</html>

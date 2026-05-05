@@ -1,0 +1,46 @@
+{
+  "chatbot": {
+    "monthly": {
+      "price": 299,
+      "setupFee": 499,
+      "features": [
+        "Unbegrenzte Nachrichten",
+        "Website-Integration",
+        "Training auf kompletten Website-Daten",
+        "Backend-Datenintegration m\u00f6glich",
+        "Email-Flow-Trigger",
+        "Alle Sprachen",
+        "Analytics Dashboard",
+        "Lead-Generierung",
+        "Priority Support",
+        "Monatlich k\u00fcndbar"
+      ]
+    },
+    "yearly": {
+      "price": 250,
+      "setupFee": 499,
+      "totalYearly": 2500,
+      "savings": 500,
+      "features": [
+        "Unbegrenzte Nachrichten",
+        "Website-Integration",
+        "Training auf kompletten Website-Daten",
+        "Backend-Datenintegration m\u00f6glich",
+        "Email-Flow-Trigger",
+        "Alle Sprachen",
+        "Analytics Dashboard",
+        "Lead-Generierung",
+        "Priority Support",
+        "2 Monate geschenkt"
+      ]
+    }
+  },
+  "sale": {
+    "active": false,
+    "bannerText": "Black Friday Sale",
+    "bannerColor": "#ff0000",
+    "discount": 0,
+    "originalMonthlyPrice": 299,
+    "originalYearlyPrice": 250
+  }
+}
