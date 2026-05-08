@@ -5,6 +5,10 @@ import Script from "next/script";
 import { Container, Section, Eyebrow } from "@/components/ui/container";
 
 const CAL_LINK = process.env.NEXT_PUBLIC_CAL_LINK ?? "fwstudios/30min";
+const CAL_ORIGIN =
+  process.env.NEXT_PUBLIC_CAL_ORIGIN ?? "https://app.cal.eu";
+const CAL_EMBED_URL = `${CAL_ORIGIN}/embed/embed.js`;
+const CAL_NS = CAL_LINK.split("/").pop() || "30min";
 
 export function Booking() {
   React.useEffect(() => {
@@ -16,13 +20,13 @@ export function Booking() {
       };
     };
     if (typeof window !== "undefined" && w.Cal) {
-      w.Cal("init", "30min", { origin: "https://app.cal.com" });
-      w.Cal.ns?.["30min"]?.("inline", {
+      w.Cal("init", CAL_NS, { origin: CAL_ORIGIN });
+      w.Cal.ns?.[CAL_NS]?.("inline", {
         elementOrSelector: "#cal-inline",
         config: { layout: "month_view", theme: "dark" },
         calLink: CAL_LINK,
       });
-      w.Cal.ns?.["30min"]?.("ui", {
+      w.Cal.ns?.[CAL_NS]?.("ui", {
         theme: "dark",
         cssVarsPerTheme: {
           dark: { "cal-brand": "#00d4ff" },
@@ -55,7 +59,7 @@ export function Booking() {
       </Container>
 
       <Script id="cal-embed" strategy="afterInteractive">
-        {`(function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if(typeof namespace === "string"){cal.ns[namespace] = cal.ns[namespace] || api;p(cal.ns[namespace], ar);p(cal, ["initNamespace", namespace]);} else p(cal, ar); return;} p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");`}
+        {`(function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if(typeof namespace === "string"){cal.ns[namespace] = cal.ns[namespace] || api;p(cal.ns[namespace], ar);p(cal, ["initNamespace", namespace]);} else p(cal, ar); return;} p(cal, ar); }; })(window, "${CAL_EMBED_URL}", "init");`}
       </Script>
     </Section>
   );

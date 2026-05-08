@@ -82,6 +82,6 @@ export const DEFAULT_CONFIG: ChatbotConfig = {
       "Wenn der Nutzer ernsthaftes Interesse an einer Zusammenarbeit zeigt (z.B. nach Angebot, Termin oder Rückruf fragt), nutze das Tool capture_lead, um Name, E-Mail und Anliegen zu sichern.",
   },
   toolsEnabled: true,
-  bookingUrl: "https://cal.com/fwstudios/intro",
+  bookingUrl: "https://cal.eu/fwstudios/30min",
   updatedAt: new Date(0).toISOString(),
 };
