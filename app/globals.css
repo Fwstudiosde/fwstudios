@@ -1,0 +1,221 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* Surface scale (Linear-inspired) */
+  --color-bg: #08090a;
+  --color-bg-subtle: #0c0d0f;
+  --color-surface: #111214;
+  --color-surface-2: #16181a;
+  --color-surface-3: #1c1f22;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-strong: rgba(255, 255, 255, 0.14);
+
+  /* Text */
+  --color-fg: #f5f6f7;
+  --color-fg-muted: #a1a5ad;
+  --color-fg-subtle: #6b7079;
+  --color-fg-faint: #4a4e57;
+
+  /* Brand */
+  --color-brand: #00d4ff;
+  --color-brand-2: #5b8cff;
+  --color-brand-3: #b56bff;
+  --color-accent-purple: #7c5cff;
+
+  /* Semantic */
+  --color-success: #34d399;
+  --color-warning: #fbbf24;
+  --color-danger: #f87171;
+
+  /* Tailwind aliases */
+  --color-background: var(--color-bg);
+  --color-foreground: var(--color-fg);
+
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-inter);
+  --font-mono: var(--font-geist-mono);
+
+  /* Radius */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-2xl: 28px;
+}
+
+* {
+  border-color: var(--color-border);
+}
+
+html,
+body {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "ss01", "cv11";
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: rgba(0, 212, 255, 0.3);
+  color: #ffffff;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.16);
+  background-clip: padding-box;
+  border: 2px solid transparent;
+}
+
+/* Display headline utility — tight tracking, slight optical balance */
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.025em;
+  font-feature-settings: "ss01", "cv11";
+}
+
+/* Subtle dotted noise overlay for hero backgrounds */
+.bg-noise {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 3px 3px;
+}
+
+/* Gradient text */
+.text-gradient {
+  background: linear-gradient(180deg, #ffffff 0%, #b8bcc4 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.text-gradient-brand {
+  background: linear-gradient(135deg, #00d4ff 0%, #7c5cff 60%, #b56bff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Glow ring for primary CTAs */
+.glow-brand {
+  box-shadow:
+    0 0 0 1px rgba(0, 212, 255, 0.4),
+    0 8px 32px -8px rgba(0, 212, 255, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Subtle elevated card */
+.card-elevated {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.03) 0%,
+    rgba(255, 255, 255, 0.01) 100%
+  );
+  border: 1px solid var(--color-border);
+  backdrop-filter: blur(12px);
+}
+
+/* Hero ambient orb */
+.orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(80px);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Grid backdrop */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 70%);
+}
+
+/* Animated underline for nav */
+.nav-link {
+  position: relative;
+  color: var(--color-fg-muted);
+  transition: color 180ms ease;
+}
+.nav-link:hover {
+  color: var(--color-fg);
+}
+
+/* Legal / long-form prose */
+.prose-legal {
+  color: var(--color-fg-muted);
+  font-size: 15px;
+  line-height: 1.75;
+  max-width: 70ch;
+}
+.prose-legal h2 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-fg);
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+}
+.prose-legal h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.015em;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-fg);
+  margin-top: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+.prose-legal p {
+  margin-bottom: 1rem;
+}
+.prose-legal ul,
+.prose-legal ol {
+  padding-left: 1.25rem;
+  margin-bottom: 1rem;
+}
+.prose-legal li {
+  margin-bottom: 0.35rem;
+}
+.prose-legal a {
+  color: var(--color-brand);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.prose-legal a:hover {
+  color: #5ee5ff;
+}
+.prose-legal strong {
+  color: var(--color-fg);
+  font-weight: 600;
+}
+
+/* Reveal on scroll utility (used by client component) */
+.reveal-up {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 700ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-up.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}

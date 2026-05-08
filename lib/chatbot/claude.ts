@@ -1,0 +1,122 @@
+import "server-only";
+
+export type ClaudeMessage = {
+  role: "user" | "assistant";
+  content: string | ContentBlock[];
+};
+
+export type ContentBlock =
+  | { type: "text"; text: string }
+  | { type: "tool_use"; id: string; name: string; input: Record<string, unknown> }
+  | {
+      type: "tool_result";
+      tool_use_id: string;
+      content: string;
+      is_error?: boolean;
+    };
+
+export type ClaudeTool = {
+  name: string;
+  description: string;
+  input_schema: Record<string, unknown>;
+};
+
+export type ClaudeResponse = {
+  id: string;
+  stop_reason: string | null;
+  content: ContentBlock[];
+  usage: { input_tokens: number; output_tokens: number };
+};
+
+export async function callClaude({
+  apiKey,
+  model,
+  system,
+  messages,
+  tools,
+  temperature,
+  maxTokens,
+}: {
+  apiKey: string;
+  model: string;
+  system: string;
+  messages: ClaudeMessage[];
+  tools?: ClaudeTool[];
+  temperature: number;
+  maxTokens: number;
+}): Promise<ClaudeResponse> {
+  const body: Record<string, unknown> = {
+    model,
+    max_tokens: maxTokens,
+    temperature,
+    system,
+    messages,
+  };
+  if (tools && tools.length > 0) body.tools = tools;
+
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01",
+      "content-type": "application/json",
+    },
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(60_000),
+  });
+
+  if (!res.ok) {
+    const errText = await res.text().catch(() => "");
+    throw new Error(`Claude API ${res.status}: ${errText.slice(0, 400)}`);
+  }
+  return (await res.json()) as ClaudeResponse;
+}
+
+export const CHATBOT_TOOLS: ClaudeTool[] = [
+  {
+    name: "capture_lead",
+    description:
+      "Use when the user shows real interest (asks for an offer, a meeting, a callback or shares contact details). Persists a lead in the CRM.",
+    input_schema: {
+      type: "object",
+      properties: {
+        email: {
+          type: "string",
+          description: "User's email address. Required.",
+        },
+        name: { type: "string", description: "User's name if known." },
+        message: {
+          type: "string",
+          description:
+            "Short summary of what the user wants — used by the sales team to prepare.",
+        },
+      },
+      required: ["email"],
+    },
+  },
+  {
+    name: "book_meeting",
+    description:
+      "Returns a public booking URL the user can use to schedule a 30-minute consultation. Use when the user wants to schedule a call.",
+    input_schema: {
+      type: "object",
+      properties: {},
+    },
+  },
+];
+
+export function extractText(content: ContentBlock[]): string {
+  return content
+    .filter((b): b is Extract<ContentBlock, { type: "text" }> => b.type === "text")
+    .map((b) => b.text)
+    .join("\n")
+    .trim();
+}
+
+export function extractToolUses(
+  content: ContentBlock[]
+): Extract<ContentBlock, { type: "tool_use" }>[] {
+  return content.filter(
+    (b): b is Extract<ContentBlock, { type: "tool_use" }> => b.type === "tool_use"
+  );
+}
