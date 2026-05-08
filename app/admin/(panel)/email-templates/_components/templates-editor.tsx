@@ -8,7 +8,9 @@ import { cn } from "@/lib/utils";
 
 export function TemplatesEditor({ initial }: { initial: EmailTemplate[] }) {
   const [items, setItems] = React.useState(initial);
-  const [activeId, setActiveId] = React.useState(items[0]?.id ?? null);
+  const [activeId, setActiveId] = React.useState<string | null>(
+    items[0]?.id ?? null
+  );
   const [saving, setSaving] = React.useState(false);
   const [saved, setSaved] = React.useState(false);
   const [copied, setCopied] = React.useState<"subject" | "body" | null>(null);

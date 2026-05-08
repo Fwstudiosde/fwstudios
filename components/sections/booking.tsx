@@ -8,8 +8,12 @@ const CAL_LINK = process.env.NEXT_PUBLIC_CAL_LINK ?? "fwstudios/30min";
 
 export function Booking() {
   React.useEffect(() => {
+    type CalFn = (...args: unknown[]) => void;
     const w = window as unknown as {
-      Cal?: ((...args: unknown[]) => void) & { loaded?: boolean };
+      Cal?: CalFn & {
+        loaded?: boolean;
+        ns?: Record<string, CalFn | undefined>;
+      };
     };
     if (typeof window !== "undefined" && w.Cal) {
       w.Cal("init", "30min", { origin: "https://app.cal.com" });

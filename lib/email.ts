@@ -22,14 +22,16 @@ export async function sendMail(opts: {
     return { ok: false, error: "RESEND_API_KEY missing" };
   }
   try {
-    const { data, error } = await client.emails.send({
+    const payload = {
       from: FROM,
       to: opts.to,
       subject: opts.subject,
-      text: opts.text,
-      html: opts.html,
-      replyTo: opts.replyTo,
-    });
+      ...(opts.html ? { html: opts.html } : { text: opts.text ?? "" }),
+      ...(opts.replyTo ? { replyTo: opts.replyTo } : {}),
+    };
+    const { data, error } = await client.emails.send(
+      payload as Parameters<typeof client.emails.send>[0]
+    );
     if (error) return { ok: false, error: error.message };
     return { ok: true, id: data?.id };
   } catch (err) {
