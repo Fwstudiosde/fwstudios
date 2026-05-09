@@ -19,8 +19,8 @@ export function ChatbotPreview() {
       </div>
 
       {/* Chat body */}
-      <div className="grid gap-0 md:grid-cols-[1fr_320px]">
-        <div className="flex flex-col gap-4 p-6 sm:p-8">
+      <div className="grid gap-0 lg:grid-cols-[1fr_280px]">
+        <div className="flex flex-col gap-3 p-4 sm:gap-4 sm:p-6 md:p-8">
           <Bubble role="bot" delay={0}>
             Hi! Ich bin der FWStudios Assistent. Ich kenne Ihre komplette
             Website und kann Fragen zu Produkten, Preisen und
@@ -52,7 +52,7 @@ export function ChatbotPreview() {
         </div>
 
         {/* Side panel: live metrics */}
-        <div className="hidden border-l border-border bg-white/[0.015] p-6 md:flex md:flex-col md:gap-5">
+        <div className="hidden border-l border-border bg-white/[0.015] p-6 lg:flex lg:flex-col lg:gap-5">
           <div className="text-xs font-semibold uppercase tracking-wider text-fg-subtle">
             Live
           </div>
@@ -105,7 +105,7 @@ function Bubble({
         {isBot ? <Bot className="size-4" /> : <User className="size-4" />}
       </div>
       <div
-        className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
+        className={`max-w-[80%] rounded-2xl px-3 py-2 text-[13px] leading-relaxed sm:max-w-[75%] sm:px-4 sm:py-2.5 sm:text-sm ${
           isBot
             ? "rounded-tl-sm bg-white/[0.04] text-fg"
             : "rounded-tr-sm bg-fg/[0.95] text-bg"

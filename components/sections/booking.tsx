@@ -47,34 +47,35 @@ export function Booking() {
       <Container>
         <div className="mx-auto max-w-2xl text-center">
           <Eyebrow>Direkt buchen</Eyebrow>
-          <h2 className="font-display mt-4 text-4xl font-semibold tracking-tight text-fg sm:text-5xl">
+          <h2 className="font-display mt-4 text-3xl font-semibold tracking-tight text-fg sm:text-4xl md:text-5xl">
             30 Minuten.{" "}
             <span className="text-gradient-brand">Kostenlos. Verbindlich.</span>
           </h2>
-          <p className="mt-4 text-lg text-fg-muted">
+          <p className="mt-4 text-base text-fg-muted sm:text-lg">
             Direkt einen Termin im Kalender buchen — keine Email-Pingpong.
           </p>
         </div>
-        <div className="mx-auto mt-12 max-w-4xl overflow-hidden rounded-2xl border border-border bg-white/[0.02] p-2">
+        <div className="mx-auto mt-10 max-w-4xl overflow-hidden rounded-2xl border border-border bg-white/[0.02] p-1 sm:mt-12 sm:p-2">
           <div
             id="cal-inline"
-            style={{ width: "100%", minHeight: "650px", overflow: "hidden" }}
+            className="min-h-[560px] sm:min-h-[620px] md:min-h-[650px]"
+            style={{ width: "100%", overflow: "hidden" }}
           />
         </div>
-        <div className="mx-auto mt-8 flex max-w-4xl flex-col items-center justify-center gap-3 text-center sm:flex-row sm:gap-8">
+        <div className="mx-auto mt-6 flex max-w-4xl flex-col items-center justify-center gap-3 text-center sm:mt-8 sm:flex-row sm:gap-8">
           <p className="text-sm text-fg-muted">
             Lieber direkt schreiben oder anrufen?
           </p>
           <a
             href={`mailto:${CONTACT_EMAIL}`}
-            className="inline-flex items-center gap-2 text-sm font-medium text-fg hover:text-brand transition-colors"
+            className="inline-flex min-h-[40px] items-center gap-2 text-sm font-medium text-fg hover:text-brand transition-colors"
           >
             <Mail className="size-4" />
-            {CONTACT_EMAIL}
+            <span className="break-all">{CONTACT_EMAIL}</span>
           </a>
           <a
             href={`tel:${CONTACT_PHONE_TEL}`}
-            className="inline-flex items-center gap-2 text-sm font-medium text-fg hover:text-brand transition-colors"
+            className="inline-flex min-h-[40px] items-center gap-2 text-sm font-medium text-fg hover:text-brand transition-colors"
           >
             <Phone className="size-4" />
             {CONTACT_PHONE_DISPLAY}

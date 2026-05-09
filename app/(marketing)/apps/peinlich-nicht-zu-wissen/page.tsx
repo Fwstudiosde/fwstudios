@@ -120,7 +120,7 @@ export default function PnzwPage() {
         <Container>
           <div className="mx-auto max-w-2xl text-center">
             <Eyebrow>Kategorien</Eyebrow>
-            <h2 className="font-display mt-4 text-4xl font-semibold tracking-tight text-fg sm:text-5xl">
+            <h2 className="font-display mt-4 text-3xl font-semibold tracking-tight text-fg sm:text-4xl md:text-5xl">
               Sechs Wissensgebiete,{" "}
               <span className="text-gradient-brand">162 kuratierte Fragen.</span>
             </h2>
@@ -150,7 +150,7 @@ export default function PnzwPage() {
         <Container>
           <div className="mx-auto max-w-2xl text-center">
             <Eyebrow>Was die App ausmacht</Eyebrow>
-            <h2 className="font-display mt-4 text-4xl font-semibold tracking-tight text-fg sm:text-5xl">
+            <h2 className="font-display mt-4 text-3xl font-semibold tracking-tight text-fg sm:text-4xl md:text-5xl">
               Quiz, das{" "}
               <span className="text-gradient-brand">tatsächlich etwas bringt.</span>
             </h2>

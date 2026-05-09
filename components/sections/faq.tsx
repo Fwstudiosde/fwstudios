@@ -42,7 +42,7 @@ export function FAQ() {
       <Container size="sm">
         <div className="text-center">
           <Eyebrow>FAQ</Eyebrow>
-          <h2 className="font-display mt-4 text-4xl font-semibold tracking-tight text-fg sm:text-5xl">
+          <h2 className="font-display mt-4 text-3xl font-semibold tracking-tight text-fg sm:text-4xl md:text-5xl">
             Häufige Fragen.
           </h2>
         </div>

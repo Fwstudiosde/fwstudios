@@ -14,11 +14,11 @@ export function Process({
       <Container>
         <div className="mx-auto max-w-2xl text-center">
           <Eyebrow>{eyebrow}</Eyebrow>
-          <h2 className="font-display mt-4 text-4xl font-semibold tracking-tight text-fg sm:text-5xl">
+          <h2 className="font-display mt-4 text-3xl font-semibold tracking-tight text-fg sm:text-4xl md:text-5xl">
             {title}
           </h2>
         </div>
-        <div className="relative mx-auto mt-16 max-w-4xl">
+        <div className="relative mx-auto mt-12 max-w-4xl sm:mt-16">
           <div className="absolute left-[19px] top-2 bottom-2 w-px bg-border md:left-1/2 md:-translate-x-1/2" />
           <ul className="space-y-10">
             {steps.map((s, i) => (

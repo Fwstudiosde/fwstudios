@@ -73,13 +73,13 @@ export function CookieBanner() {
           <div className="mt-4 flex flex-col gap-2 sm:flex-row">
             <button
               onClick={() => decide(true)}
-              className="flex-1 rounded-lg bg-brand px-3 py-2 text-sm font-medium text-bg transition-colors hover:bg-[#19c4f0]"
+              className="flex-1 rounded-lg bg-brand px-3 py-2.5 text-sm font-medium text-bg transition-colors hover:bg-[#19c4f0]"
             >
               Akzeptieren
             </button>
             <button
               onClick={() => decide(false)}
-              className="flex-1 rounded-lg border border-border bg-white/[0.03] px-3 py-2 text-sm font-medium text-fg-muted transition-colors hover:bg-white/[0.06] hover:text-fg"
+              className="flex-1 rounded-lg border border-border bg-white/[0.03] px-3 py-2.5 text-sm font-medium text-fg-muted transition-colors hover:bg-white/[0.06] hover:text-fg"
             >
               Nur notwendig
             </button>

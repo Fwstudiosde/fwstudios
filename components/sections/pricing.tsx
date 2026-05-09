@@ -32,11 +32,11 @@ export function Pricing() {
       <Container>
         <div className="mx-auto max-w-3xl text-center">
           <Eyebrow>Preise</Eyebrow>
-          <h2 className="font-display mt-4 text-4xl font-semibold tracking-tight text-fg sm:text-5xl">
+          <h2 className="font-display mt-4 text-3xl font-semibold tracking-tight text-fg sm:text-4xl md:text-5xl">
             KI-getrieben gebaut.{" "}
             <span className="text-gradient-brand">Unschlagbar im Preis.</span>
           </h2>
-          <p className="mt-5 text-lg leading-relaxed text-fg-muted">
+          <p className="mt-5 text-base leading-relaxed text-fg-muted sm:text-lg">
             Wir arbeiten hochmodern mit KI in jedem Schritt — von Konzept und
             Architektur über Code-Generierung bis zu Tests und Deployment. Was
             klassische Agenturen Wochen kostet, liefern wir in Tagen. Diesen
@@ -61,9 +61,9 @@ export function Pricing() {
           </div>
         </div>
 
-        <div className="mx-auto mt-14 grid max-w-5xl gap-6 lg:grid-cols-2">
+        <div className="mx-auto mt-10 grid max-w-5xl gap-5 sm:mt-14 sm:gap-6 lg:grid-cols-2">
           {/* Plan 1: Chatbot */}
-          <div className="relative overflow-hidden rounded-2xl border border-brand/30 bg-gradient-to-b from-brand/[0.06] to-transparent p-8">
+          <div className="relative overflow-hidden rounded-2xl border border-brand/30 bg-gradient-to-b from-brand/[0.06] to-transparent p-6 sm:p-8">
             <div
               className="orb -right-20 -top-20 size-72 bg-brand/40 opacity-60"
               aria-hidden
@@ -82,7 +82,7 @@ export function Pricing() {
               </p>
 
               <div className="mt-6 flex items-baseline gap-2">
-                <span className="font-display text-4xl font-semibold tracking-tight text-fg sm:text-5xl">
+                <span className="font-display text-3xl font-semibold tracking-tight text-fg sm:text-4xl md:text-5xl">
                   Auf Anfrage
                 </span>
               </div>
@@ -115,7 +115,7 @@ export function Pricing() {
           </div>
 
           {/* Plan 2: Custom */}
-          <div className="relative overflow-hidden rounded-2xl border border-border bg-gradient-to-b from-white/[0.03] to-white/[0.01] p-8">
+          <div className="relative overflow-hidden rounded-2xl border border-border bg-gradient-to-b from-white/[0.03] to-white/[0.01] p-6 sm:p-8">
             <h3 className="font-display text-2xl font-semibold text-fg">
               Custom-Projekt
             </h3>
@@ -124,7 +124,7 @@ export function Pricing() {
             </p>
 
             <div className="mt-6 flex items-baseline gap-2">
-              <span className="font-display text-4xl font-semibold tracking-tight text-fg sm:text-5xl">
+              <span className="font-display text-3xl font-semibold tracking-tight text-fg sm:text-4xl md:text-5xl">
                 Auf Anfrage
               </span>
             </div>

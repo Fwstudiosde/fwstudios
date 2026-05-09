@@ -37,7 +37,7 @@ export default async function ProjektDetail({
 
   return (
     <>
-      <section className="relative overflow-hidden pt-32 pb-12 sm:pt-40">
+      <section className="relative overflow-hidden pt-24 pb-10 sm:pt-32 sm:pb-12 md:pt-40">
         <div className="absolute inset-0 bg-grid" aria-hidden />
         <div
           className="orb left-1/2 top-0 h-[500px] w-[700px] -translate-x-1/2 bg-brand/25"
@@ -50,13 +50,13 @@ export default async function ProjektDetail({
           >
             <ArrowLeft className="size-3.5" /> Alle Projekte
           </Link>
-          <div className="mt-8 grid gap-12 lg:grid-cols-[1.5fr_1fr] lg:items-start">
+          <div className="mt-6 grid gap-8 sm:mt-8 sm:gap-12 lg:grid-cols-[1.5fr_1fr] lg:items-start">
             <div>
               <Eyebrow>{project.category}</Eyebrow>
-              <h1 className="font-display mt-6 text-4xl font-semibold leading-[1.1] tracking-tight text-fg sm:text-5xl md:text-6xl">
+              <h1 className="font-display mt-5 text-3xl font-semibold leading-[1.1] tracking-tight text-fg sm:mt-6 sm:text-4xl md:text-5xl lg:text-6xl">
                 <span className="text-gradient">{project.hero}</span>
               </h1>
-              <p className="mt-6 max-w-2xl text-lg leading-relaxed text-fg-muted">
+              <p className="mt-5 max-w-2xl text-base leading-relaxed text-fg-muted sm:mt-6 sm:text-lg">
                 {project.summary}
               </p>
               {project.appHref && (
@@ -109,7 +109,7 @@ export default async function ProjektDetail({
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
             {project.metrics.map((m) => (
               <div key={m.label} className="text-center">
-                <div className="font-display text-4xl font-semibold tracking-tight text-fg sm:text-5xl">
+                <div className="font-display text-3xl font-semibold tracking-tight text-fg sm:text-4xl md:text-5xl">
                   <span className="text-gradient-brand">{m.value}</span>
                 </div>
                 <div className="mt-2 text-sm text-fg-muted">{m.label}</div>

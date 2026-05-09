@@ -149,7 +149,7 @@ export default function AppEntwicklungPage() {
         <Container>
           <div className="mx-auto max-w-2xl text-center">
             <Eyebrow>Tech-Stack</Eyebrow>
-            <h2 className="font-display mt-4 text-4xl font-semibold tracking-tight text-fg sm:text-5xl">
+            <h2 className="font-display mt-4 text-3xl font-semibold tracking-tight text-fg sm:text-4xl md:text-5xl">
               Erprobter Mobile-Stack —{" "}
               <span className="text-gradient-brand">production-grade.</span>
             </h2>

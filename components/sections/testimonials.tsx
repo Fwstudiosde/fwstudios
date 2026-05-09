@@ -8,13 +8,13 @@ export function Testimonials() {
       <Container>
         <div className="mx-auto max-w-2xl text-center">
           <Eyebrow>Stimmen aus dem Markt</Eyebrow>
-          <h2 className="font-display mt-4 text-4xl font-semibold tracking-tight text-fg sm:text-5xl">
+          <h2 className="font-display mt-4 text-3xl font-semibold tracking-tight text-fg sm:text-4xl md:text-5xl">
             Was unsere Kunden{" "}
             <span className="text-gradient-brand">über uns sagen.</span>
           </h2>
         </div>
 
-        <div className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-12 grid gap-5 sm:mt-16 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
           {TESTIMONIALS.slice(0, 3).map((t) => (
             <figure
               key={t.author}

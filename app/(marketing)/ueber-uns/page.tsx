@@ -32,7 +32,7 @@ export default function UeberUnsPage() {
         <Container>
           <div className="mx-auto max-w-2xl text-center">
             <Eyebrow>Unsere Werte</Eyebrow>
-            <h2 className="font-display mt-4 text-4xl font-semibold tracking-tight text-fg sm:text-5xl">
+            <h2 className="font-display mt-4 text-3xl font-semibold tracking-tight text-fg sm:text-4xl md:text-5xl">
               Was uns{" "}
               <span className="text-gradient-brand">anders macht.</span>
             </h2>
@@ -60,7 +60,7 @@ export default function UeberUnsPage() {
         <Container>
           <div className="mx-auto max-w-2xl text-center">
             <Eyebrow>Team</Eyebrow>
-            <h2 className="font-display mt-4 text-4xl font-semibold tracking-tight text-fg sm:text-5xl">
+            <h2 className="font-display mt-4 text-3xl font-semibold tracking-tight text-fg sm:text-4xl md:text-5xl">
               Klein, fokussiert,{" "}
               <span className="text-gradient-brand">erreichbar.</span>
             </h2>

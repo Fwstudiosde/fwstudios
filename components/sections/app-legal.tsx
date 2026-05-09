@@ -24,7 +24,7 @@ export function AppLegal({
         >
           <ArrowLeft className="size-3.5" /> Zurück zu {appName}
         </Link>
-        <h1 className="font-display mt-6 text-4xl font-semibold tracking-tight text-fg sm:text-5xl">
+        <h1 className="font-display mt-6 text-3xl font-semibold tracking-tight text-fg sm:text-4xl md:text-5xl">
           {title}
         </h1>
         <p className="mt-3 text-sm text-fg-subtle">Stand: {updated}</p>

@@ -37,22 +37,67 @@ function CellIcon({ value }: { value: Cell }) {
   return <span className="text-sm text-fg-muted">{value}</span>;
 }
 
+const COLUMNS: { key: "fw" | "agency" | "freelancer" | "diy"; label: string; recommended?: boolean }[] = [
+  { key: "fw", label: "FWStudios", recommended: true },
+  { key: "agency", label: "Klassische Agentur" },
+  { key: "freelancer", label: "Freelancer" },
+  { key: "diy", label: "DIY / Inhouse" },
+];
+
 export function Comparison() {
   return (
     <Section className="border-t border-border" id="vergleich">
       <Container>
         <div className="mx-auto max-w-2xl text-center">
           <Eyebrow>Im Vergleich</Eyebrow>
-          <h2 className="font-display mt-4 text-4xl font-semibold tracking-tight text-fg sm:text-5xl">
+          <h2 className="font-display mt-4 text-3xl font-semibold tracking-tight text-fg sm:text-4xl md:text-5xl">
             Warum FWStudios statt{" "}
             <span className="text-gradient-brand">der üblichen Wege?</span>
           </h2>
-          <p className="mt-4 text-lg text-fg-muted">
+          <p className="mt-4 text-base text-fg-muted sm:text-lg">
             Eine ehrliche Gegenüberstellung — Sie entscheiden.
           </p>
         </div>
 
-        <div className="mt-14 overflow-hidden rounded-2xl border border-border bg-white/[0.02]">
+        {/* Mobile / small tablet: card-per-feature */}
+        <div className="mt-10 grid gap-3 md:hidden">
+          {ROWS.map((row) => (
+            <div
+              key={row.feature}
+              className="rounded-2xl border border-border bg-white/[0.02] p-4"
+            >
+              <div className="text-sm font-semibold text-fg">{row.feature}</div>
+              <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                {COLUMNS.map((col) => (
+                  <div
+                    key={col.key}
+                    className={cn(
+                      "flex items-center justify-between gap-3 rounded-lg border px-3 py-2",
+                      col.recommended
+                        ? "border-brand/30 bg-brand/[0.05]"
+                        : "border-border bg-white/[0.02]"
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "text-xs font-medium",
+                        col.recommended ? "text-fg" : "text-fg-muted"
+                      )}
+                    >
+                      {col.label}
+                    </span>
+                    <div className="shrink-0">
+                      <CellIcon value={row[col.key]} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Tablet+ / desktop: comparison table */}
+        <div className="mt-12 hidden overflow-hidden rounded-2xl border border-border bg-white/[0.02] md:mt-14 md:block">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>

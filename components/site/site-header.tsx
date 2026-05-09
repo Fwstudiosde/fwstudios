@@ -99,13 +99,13 @@ export function SiteHeader() {
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className="rounded-lg px-3 py-2.5 text-sm text-fg-muted hover:bg-white/[0.04] hover:text-fg"
+                className="rounded-lg px-4 py-3 text-sm font-medium text-fg-muted hover:bg-white/[0.04] hover:text-fg"
               >
                 {item.label}
               </Link>
             ))}
             <div className="mt-2 flex flex-col gap-2 border-t border-border pt-3">
-              <Button href="/#kontakt" variant="brand" size="md">
+              <Button href="/#kontakt" variant="brand" size="lg">
                 Termin buchen
               </Button>
             </div>

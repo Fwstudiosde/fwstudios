@@ -18,7 +18,7 @@ export function FeaturedProjects() {
         <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
           <div className="max-w-xl">
             <Eyebrow>Ausgewählte Cases</Eyebrow>
-            <h2 className="font-display mt-4 text-4xl font-semibold tracking-tight text-fg sm:text-5xl">
+            <h2 className="font-display mt-4 text-3xl font-semibold tracking-tight text-fg sm:text-4xl md:text-5xl">
               Was wir{" "}
               <span className="text-gradient-brand">geliefert haben.</span>
             </h2>
@@ -32,7 +32,7 @@ export function FeaturedProjects() {
           </Link>
         </div>
 
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
+        <div className="mt-10 grid gap-5 sm:mt-12 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {featured.map((p) => (
             <Link
               key={p.slug}

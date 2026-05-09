@@ -95,11 +95,11 @@ export default function PlattformPage() {
         <Container>
           <div className="mx-auto max-w-2xl text-center">
             <Eyebrow>Tech-Stack</Eyebrow>
-            <h2 className="font-display mt-4 text-4xl font-semibold tracking-tight text-fg sm:text-5xl">
+            <h2 className="font-display mt-4 text-3xl font-semibold tracking-tight text-fg sm:text-4xl md:text-5xl">
               Bewährter Stack —{" "}
               <span className="text-gradient-brand">keine Experimente.</span>
             </h2>
-            <p className="mt-4 text-lg text-fg-muted">
+            <p className="mt-4 text-base text-fg-muted sm:text-lg">
               Wir verwenden, was die besten Engineering-Teams der Welt
               produktiv einsetzen.
             </p>

@@ -47,22 +47,22 @@ export function Features() {
       <Container>
         <div className="mx-auto max-w-2xl text-center">
           <Eyebrow>Plattform</Eyebrow>
-          <h2 className="font-display mt-4 text-4xl font-semibold tracking-tight text-fg sm:text-5xl">
+          <h2 className="font-display mt-4 text-3xl font-semibold tracking-tight text-fg sm:text-4xl md:text-5xl">
             Alles, was eine echte
             <br />
             <span className="text-gradient-brand">KI-Plattform</span> braucht.
           </h2>
-          <p className="mt-4 text-lg text-fg-muted">
+          <p className="mt-4 text-base text-fg-muted sm:text-lg">
             Kein Spielzeug-Bot. Eine produktionsreife Plattform, die mit Ihrem
             Business mitwächst.
           </p>
         </div>
 
-        <div className="mt-16 grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-12 grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:mt-16 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map((f) => (
             <div
               key={f.title}
-              className="group relative bg-bg p-7 transition-colors hover:bg-white/[0.02]"
+              className="group relative bg-bg p-6 transition-colors hover:bg-white/[0.02] sm:p-7"
             >
               <div className="flex size-10 items-center justify-center rounded-lg border border-border bg-white/[0.04] text-brand transition-all group-hover:border-brand/40 group-hover:shadow-[0_0_24px_-4px_rgba(0,212,255,0.4)]">
                 <f.icon className="size-5" />

@@ -35,12 +35,12 @@ export default function ProjekteIndex() {
 
       <Section className="!pt-8">
         <Container>
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-5 sm:gap-6 md:grid-cols-2">
             {PROJECTS.map((p) => (
               <Link
                 key={p.slug}
                 href={`/projekte/${p.slug}`}
-                className="group relative overflow-hidden rounded-2xl border border-border bg-gradient-to-b from-white/[0.04] to-white/[0.005] p-7 transition-all duration-300 hover:border-border-strong"
+                className="group relative overflow-hidden rounded-2xl border border-border bg-gradient-to-b from-white/[0.04] to-white/[0.005] p-6 transition-all duration-300 hover:border-border-strong sm:p-7"
               >
                 <div
                   className={`absolute -right-24 -top-24 h-72 w-72 rounded-full bg-gradient-to-br ${ACCENT_GRADIENTS[p.accent]} opacity-50 blur-3xl transition-opacity duration-500 group-hover:opacity-90`}

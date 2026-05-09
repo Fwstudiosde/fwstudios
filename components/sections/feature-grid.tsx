@@ -17,11 +17,11 @@ export function FeatureGrid({
       <Container>
         <div className="mx-auto max-w-2xl text-center">
           <Eyebrow>{eyebrow}</Eyebrow>
-          <h2 className="font-display mt-4 text-4xl font-semibold tracking-tight text-fg sm:text-5xl">
+          <h2 className="font-display mt-4 text-3xl font-semibold tracking-tight text-fg sm:text-4xl md:text-5xl">
             {title}
           </h2>
           {description && (
-            <p className="mt-4 text-lg text-fg-muted">{description}</p>
+            <p className="mt-4 text-base text-fg-muted sm:text-lg">{description}</p>
           )}
         </div>
         <div className="mt-16 grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">

@@ -52,24 +52,24 @@ export function PricingCalculator() {
       <Container>
         <div className="mx-auto max-w-2xl text-center">
           <Eyebrow>Investitions-Rechner</Eyebrow>
-          <h2 className="font-display mt-4 text-4xl font-semibold tracking-tight text-fg sm:text-5xl">
+          <h2 className="font-display mt-4 text-3xl font-semibold tracking-tight text-fg sm:text-4xl md:text-5xl">
             Kosten?{" "}
             <span className="text-gradient-brand">Sehen Sie selbst.</span>
           </h2>
-          <p className="mt-4 text-lg text-fg-muted">
+          <p className="mt-4 text-base text-fg-muted sm:text-lg">
             Eine ehrliche Range — der Festpreis kommt nach unserem Erstgespräch.
           </p>
         </div>
 
-        <div className="mx-auto mt-14 max-w-5xl rounded-2xl border border-border bg-white/[0.02] p-6 backdrop-blur sm:p-8">
-          <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
+        <div className="mx-auto mt-10 max-w-5xl rounded-2xl border border-border bg-white/[0.02] p-4 backdrop-blur sm:mt-14 sm:p-6 md:p-8">
+          <div className="grid gap-6 lg:grid-cols-[1fr_300px] lg:gap-8">
             <div className="space-y-7">
               {/* Type */}
               <div>
                 <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-fg-subtle">
                   Was bauen wir?
                 </div>
-                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
                   {TYPES.map((t) => (
                     <button
                       key={t.id}
@@ -170,11 +170,11 @@ export function PricingCalculator() {
             </div>
 
             {/* Summary */}
-            <aside className="sticky top-24 self-start rounded-xl border border-border bg-bg/60 p-6">
+            <aside className="self-start rounded-xl border border-border bg-bg/60 p-5 sm:p-6 lg:sticky lg:top-24">
               <div className="text-xs font-semibold uppercase tracking-wider text-fg-subtle">
                 Geschätzte Range
               </div>
-              <div className="mt-3 font-display text-3xl font-semibold tracking-tight text-fg">
+              <div className="mt-3 font-display text-2xl font-semibold tracking-tight text-fg sm:text-3xl">
                 {min.toLocaleString("de-DE")} –{" "}
                 {max.toLocaleString("de-DE")} €
               </div>

@@ -10,7 +10,7 @@ export function LegalPage({
   return (
     <Section className="pt-40">
       <Container size="sm">
-        <h1 className="font-display text-4xl font-semibold tracking-tight text-fg sm:text-5xl">
+        <h1 className="font-display text-3xl font-semibold tracking-tight text-fg sm:text-4xl md:text-5xl">
           {title}
         </h1>
         <article

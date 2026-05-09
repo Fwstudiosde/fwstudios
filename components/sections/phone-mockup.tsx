@@ -15,7 +15,7 @@ import {
 
 export function PhoneMockup() {
   return (
-    <div className="mx-auto grid w-full max-w-3xl grid-cols-2 gap-6 sm:grid-cols-3">
+    <div className="mx-auto grid w-full max-w-3xl grid-cols-3 gap-3 sm:gap-6">
       <Phone delay="0s" tilt="-rotate-6" tone="lime">
         <VelosRunPreview />
       </Phone>
@@ -55,13 +55,13 @@ function Phone({
       style={{ animation: `phone-float 6s ease-in-out ${delay} infinite` }}
     >
       <div
-        className={`relative aspect-[9/19] overflow-hidden rounded-[34px] border-[6px] border-[#1a1c1f] bg-bg shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)] ${
-          featured ? "scale-110" : ""
+        className={`relative aspect-[9/19] overflow-hidden rounded-[24px] border-[4px] border-[#1a1c1f] bg-bg shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)] sm:rounded-[34px] sm:border-[6px] ${
+          featured ? "sm:scale-110" : ""
         }`}
         style={{ boxShadow: `0 20px 60px -10px ${ringColor}` }}
       >
         {/* notch */}
-        <div className="absolute left-1/2 top-1.5 z-10 h-4 w-16 -translate-x-1/2 rounded-full bg-[#0a0b0d]" />
+        <div className="absolute left-1/2 top-1 z-10 h-2.5 w-10 -translate-x-1/2 rounded-full bg-[#0a0b0d] sm:top-1.5 sm:h-4 sm:w-16" />
         <div className="h-full w-full overflow-hidden bg-[#0A0B0F]">
           {children}
         </div>

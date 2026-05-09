@@ -129,7 +129,7 @@ export default function SparkochPage() {
         <Container>
           <div className="mx-auto max-w-2xl text-center">
             <Eyebrow>Was die App kann</Eyebrow>
-            <h2 className="font-display mt-4 text-4xl font-semibold tracking-tight text-fg sm:text-5xl">
+            <h2 className="font-display mt-4 text-3xl font-semibold tracking-tight text-fg sm:text-4xl md:text-5xl">
               Smartes Kochen,{" "}
               <span className="text-gradient-brand">spürbar günstiger.</span>
             </h2>
@@ -157,7 +157,7 @@ export default function SparkochPage() {
         <Container>
           <div className="mx-auto max-w-2xl text-center">
             <Eyebrow>So funktioniert's</Eyebrow>
-            <h2 className="font-display mt-4 text-4xl font-semibold tracking-tight text-fg sm:text-5xl">
+            <h2 className="font-display mt-4 text-3xl font-semibold tracking-tight text-fg sm:text-4xl md:text-5xl">
               In vier Schritten{" "}
               <span className="text-gradient-brand">vom Foto zum Teller.</span>
             </h2>
