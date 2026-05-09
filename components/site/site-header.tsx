@@ -12,7 +12,7 @@ const NAV = [
   { href: "/plattform-entwicklung", label: "Plattform" },
   { href: "/app-entwicklung", label: "Apps" },
   { href: "/projekte", label: "Projekte" },
-  { href: "/#preise", label: "Konditionen" },
+  { href: "/#preise", label: "Preise" },
 ];
 
 export function SiteHeader() {

@@ -24,11 +24,11 @@ const ITEMS = [
   },
   {
     q: "Was passiert, wenn ich kündigen will?",
-    a: "Die Konditionen — inkl. Vertragslaufzeit und Kündigungsfristen — werden individuell vereinbart. Sie behalten in jedem Fall den Export Ihrer Konfiguration und Conversation-Logs.",
+    a: "Vertragslaufzeit und Kündigungsfristen werden individuell vereinbart. Sie behalten in jedem Fall den Export Ihrer Konfiguration und Conversation-Logs.",
   },
   {
-    q: "Wie laufen die Konditionen ab?",
-    a: "Wir geben einen verbindlichen Festpreis nach kostenloser Erstberatung. Kein Standard-Tarif — alles wird auf Ihren Use-Case zugeschnitten.",
+    q: "Wie laufen die Preise ab?",
+    a: "Wir geben einen verbindlichen Festpreis nach kostenloser Erstberatung. Kein Standard-Tarif — alles wird auf Ihren Use-Case zugeschnitten. Weil wir KI-getrieben arbeiten, liegen unsere Preise deutlich unter denen klassischer Agenturen.",
   },
   {
     q: "Übernehmt ihr auch komplette Plattform-Projekte?",

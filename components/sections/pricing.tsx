@@ -1,4 +1,4 @@
-import { Check } from "lucide-react";
+import { Check, Cpu, Gauge, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Container, Section, Eyebrow } from "@/components/ui/container";
 
@@ -30,17 +30,35 @@ export function Pricing() {
   return (
     <Section id="preise" className="border-t border-border">
       <Container>
-        <div className="mx-auto max-w-2xl text-center">
-          <Eyebrow>Konditionen</Eyebrow>
+        <div className="mx-auto max-w-3xl text-center">
+          <Eyebrow>Preise</Eyebrow>
           <h2 className="font-display mt-4 text-4xl font-semibold tracking-tight text-fg sm:text-5xl">
-            Konditionen{" "}
-            <span className="text-gradient-brand">auf Anfrage.</span>
+            KI-getrieben gebaut.{" "}
+            <span className="text-gradient-brand">Unschlagbar im Preis.</span>
           </h2>
-          <p className="mt-4 text-lg text-fg-muted">
-            Jedes Projekt ist anders — wir geben einen verbindlichen Festpreis
-            nach kostenloser Erstberatung. Kein Standard-Tarif, kein
-            Kleingedrucktes.
+          <p className="mt-5 text-lg leading-relaxed text-fg-muted">
+            Wir arbeiten hochmodern mit KI in jedem Schritt — von Konzept und
+            Architektur über Code-Generierung bis zu Tests und Deployment. Was
+            klassische Agenturen Wochen kostet, liefern wir in Tagen. Diesen
+            Effizienzvorsprung geben wir 1:1 an Sie weiter — als faire,
+            transparente Festpreise, die mit konventionellen Anbietern schlicht
+            nicht zu schlagen sind.
           </p>
+
+          <div className="mx-auto mt-8 flex max-w-2xl flex-wrap items-center justify-center gap-3 text-sm">
+            <span className="inline-flex items-center gap-2 rounded-full border border-brand/30 bg-brand/[0.06] px-3.5 py-1.5 text-fg">
+              <Sparkles className="size-3.5 text-brand" />
+              KI-gestützter Workflow
+            </span>
+            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-white/[0.03] px-3.5 py-1.5 text-fg-muted">
+              <Gauge className="size-3.5 text-brand" />
+              Lieferung in Tagen statt Wochen
+            </span>
+            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-white/[0.03] px-3.5 py-1.5 text-fg-muted">
+              <Cpu className="size-3.5 text-brand" />
+              Verbindlicher Festpreis
+            </span>
+          </div>
         </div>
 
         <div className="mx-auto mt-14 grid max-w-5xl gap-6 lg:grid-cols-2">
@@ -138,8 +156,9 @@ export function Pricing() {
         </div>
 
         <p className="mx-auto mt-10 max-w-2xl text-center text-sm text-fg-subtle">
-          Alle Konditionen werden individuell vereinbart. 30 Minuten
-          Erstberatung — ohne Verkaufsgespräch.
+          Jeder Preis wird individuell auf Ihren Use-Case zugeschnitten — kein
+          Standard-Tarif, kein Kleingedrucktes. 30 Minuten Erstberatung ohne
+          Verkaufsgespräch.
         </p>
       </Container>
     </Section>

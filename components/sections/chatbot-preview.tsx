@@ -23,7 +23,7 @@ export function ChatbotPreview() {
         <div className="flex flex-col gap-4 p-6 sm:p-8">
           <Bubble role="bot" delay={0}>
             Hi! Ich bin der FWStudios Assistent. Ich kenne Ihre komplette
-            Website und kann Fragen zu Produkten, Konditionen und
+            Website und kann Fragen zu Produkten, Preisen und
             Beratungsterminen beantworten.
           </Bubble>
           <Bubble role="user" delay={0.1}>
@@ -31,7 +31,7 @@ export function ChatbotPreview() {
           </Bubble>
           <Bubble role="bot" delay={0.2}>
             Trainiert auf Ihre Website, beantwortet Kundenfragen 24/7,
-            qualifiziert Leads und triggert Email-Workflows. Konditionen
+            qualifiziert Leads und triggert Email-Workflows. Preise
             vereinbaren wir individuell — soll ich einen Beratungstermin
             vorschlagen?
           </Bubble>

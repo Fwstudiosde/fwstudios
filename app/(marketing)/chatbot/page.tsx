@@ -20,7 +20,7 @@ import { CTA } from "@/components/sections/cta";
 export const metadata = {
   title: "KI-Chatbot",
   description:
-    "Productized KI-Chatbot, trainiert auf Ihre Website. Live in 7 Tagen. Lead-Capture, Email-Trigger, Analytics inklusive — Konditionen auf Anfrage.",
+    "Productized KI-Chatbot, trainiert auf Ihre Website. Live in 7 Tagen. Lead-Capture, Email-Trigger, Analytics inklusive — Preise auf Anfrage.",
 };
 
 export default function ChatbotPage() {

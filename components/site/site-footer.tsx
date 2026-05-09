@@ -21,7 +21,7 @@ const COLUMNS: { title: string; links: { href: string; label: string }[] }[] = [
     links: [
       { href: "/projekte", label: "Projekte" },
       { href: "/ueber-uns", label: "Über uns" },
-      { href: "/#preise", label: "Konditionen" },
+      { href: "/#preise", label: "Preise" },
     ],
   },
   {

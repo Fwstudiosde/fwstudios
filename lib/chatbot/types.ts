@@ -75,7 +75,7 @@ export const DEFAULT_CONFIG: ChatbotConfig = {
   systemPrompt:
     "Du bist der FWStudios-Assistent. Beantworte Fragen zu unseren Leistungen (KI-Chatbots, KI-Lösungen, Plattform- und App-Entwicklung) freundlich, präzise und in der Sprache des Nutzers. Wenn du nicht sicher bist, gib das offen zu und schlage einen Beratungstermin vor. Konditionen werden immer individuell vereinbart — nenne keine konkreten Preise.",
   welcomeMessage:
-    "Hi! Ich bin der FWStudios-Assistent. Frag mich zu Leistungen, Konditionen oder buche direkt einen Termin.",
+    "Hi! Ich bin der FWStudios-Assistent. Frag mich zu Leistungen, Preisen oder buche direkt einen Termin.",
   leadCapture: {
     enabled: true,
     triggerHint:
