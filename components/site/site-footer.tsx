@@ -1,5 +1,10 @@
 import Link from "next/link";
+import { CalendarCheck, Mail, Phone } from "lucide-react";
 import { Logo } from "./logo";
+
+const CONTACT_EMAIL = "accounts@fwstudios.de";
+const CONTACT_PHONE_DISPLAY = "0162 7793119";
+const CONTACT_PHONE_TEL = "+4901627793119";
 
 const COLUMNS: { title: string; links: { href: string; label: string }[] }[] = [
   {
@@ -17,8 +22,6 @@ const COLUMNS: { title: string; links: { href: string; label: string }[] }[] = [
       { href: "/projekte", label: "Projekte" },
       { href: "/ueber-uns", label: "Über uns" },
       { href: "/#preise", label: "Konditionen" },
-      { href: "/#termin", label: "Termin buchen" },
-      { href: "/admin/login", label: "Login" },
     ],
   },
   {
@@ -43,7 +46,7 @@ export function SiteFooter() {
   return (
     <footer className="relative mt-24 border-t border-border">
       <div className="mx-auto w-full max-w-7xl px-6 py-16 lg:px-8">
-        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-[1.4fr_repeat(4,1fr)]">
+        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-[1.4fr_repeat(5,1fr)]">
           <div>
             <Logo />
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-fg-muted">
@@ -71,6 +74,41 @@ export function SiteFooter() {
               </ul>
             </div>
           ))}
+
+          <div>
+            <h4 className="mb-4 text-xs font-semibold uppercase tracking-wider text-fg-subtle">
+              Kontakt
+            </h4>
+            <ul className="space-y-2.5">
+              <li>
+                <Link
+                  href="/#kontakt"
+                  className="inline-flex items-center gap-2 text-sm text-fg-muted hover:text-fg transition-colors"
+                >
+                  <CalendarCheck className="size-4" />
+                  Termin buchen
+                </Link>
+              </li>
+              <li>
+                <a
+                  href={`mailto:${CONTACT_EMAIL}`}
+                  className="inline-flex items-center gap-2 text-sm text-fg-muted hover:text-fg transition-colors"
+                >
+                  <Mail className="size-4" />
+                  {CONTACT_EMAIL}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={`tel:${CONTACT_PHONE_TEL}`}
+                  className="inline-flex items-center gap-2 text-sm text-fg-muted hover:text-fg transition-colors"
+                >
+                  <Phone className="size-4" />
+                  {CONTACT_PHONE_DISPLAY}
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
 
         <div className="mt-14 flex flex-col items-start justify-between gap-4 border-t border-border pt-8 sm:flex-row sm:items-center">

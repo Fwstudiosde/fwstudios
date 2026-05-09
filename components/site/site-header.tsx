@@ -51,11 +51,8 @@ export function SiteHeader() {
           </nav>
         </div>
         <div className="hidden items-center gap-2 lg:flex">
-          <Button href="/admin/login" variant="ghost" size="sm">
-            Login
-          </Button>
           <Button href="/#kontakt" variant="brand" size="sm">
-            Beratung anfragen
+            Termin buchen
           </Button>
         </div>
 
@@ -108,11 +105,8 @@ export function SiteHeader() {
               </Link>
             ))}
             <div className="mt-2 flex flex-col gap-2 border-t border-border pt-3">
-              <Button href="/admin/login" variant="secondary" size="md">
-                Login
-              </Button>
               <Button href="/#kontakt" variant="brand" size="md">
-                Beratung anfragen
+                Termin buchen
               </Button>
             </div>
           </div>
