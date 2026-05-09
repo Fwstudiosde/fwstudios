@@ -36,8 +36,6 @@ const COLUMNS: { title: string; links: { href: string; label: string }[] }[] = [
     links: [
       { href: "/impressum", label: "Impressum" },
       { href: "/datenschutz", label: "Datenschutz" },
-      { href: "/agb", label: "AGB" },
-      { href: "/widerruf", label: "Widerruf" },
     ],
   },
 ];
