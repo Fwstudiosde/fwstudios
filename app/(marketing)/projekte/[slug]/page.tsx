@@ -59,12 +59,26 @@ export default async function ProjektDetail({
               <p className="mt-5 max-w-2xl text-base leading-relaxed text-fg-muted sm:mt-6 sm:text-lg">
                 {project.summary}
               </p>
-              {project.appHref && (
-                <div className="mt-8">
-                  <Button href={project.appHref} variant="brand" size="lg">
-                    App-Seite ansehen
-                    <ArrowUpRight className="size-4" />
-                  </Button>
+              {(project.appHref || project.externalHref) && (
+                <div className="mt-7 flex flex-col items-stretch gap-3 sm:mt-8 sm:flex-row sm:flex-wrap sm:items-center">
+                  {project.appHref && (
+                    <Button href={project.appHref} variant="brand" size="lg">
+                      App-Seite ansehen
+                      <ArrowUpRight className="size-4" />
+                    </Button>
+                  )}
+                  {project.externalHref && (
+                    <Button
+                      href={project.externalHref}
+                      variant={project.appHref ? "secondary" : "brand"}
+                      size="lg"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Live ansehen
+                      <ArrowUpRight className="size-4" />
+                    </Button>
+                  )}
                 </div>
               )}
             </div>

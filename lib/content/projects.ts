@@ -14,9 +14,107 @@ export type Project = {
   year: number;
   accent: "brand" | "purple" | "orange" | "green";
   appHref?: string;
+  externalHref?: string;
 };
 
 export const PROJECTS: Project[] = [
+  {
+    slug: "working-ben",
+    title: "Working Ben — Job-Plattform mit umgedrehtem Prozess",
+    client: "Working Ben (working-ben.de)",
+    category: "Plattform",
+    summary:
+      "Komplett konzipierte und entwickelte Job-Matching-Plattform, die den klassischen Bewerbungsprozess umdreht — Unternehmen kommen auf passende Kandidat:innen zu, statt umgekehrt.",
+    hero: "Statt sich bewerben — bewerben lassen.",
+    problem:
+      "Klassische Job-Portale verlangen Bewerbungs-Marathon: Lebensläufe schreiben, Anschreiben formulieren, hoffen. Wer bereits einen Job hat, will diesen Aufwand nicht. Unternehmen wiederum suchen Stunden in Datenbanken nach passenden Profilen.",
+    solution:
+      "Komplette Plattform — von Konzept und Informationsarchitektur über Branding bis zu Frontend, Backend und Hosting. Kandidat:innen pflegen ein schlankes Profil, Unternehmen erhalten kuratierte Matches. Der Bewerbungsprozess startet auf Augenhöhe statt mit Standard-Anschreiben.",
+    outcome:
+      "Eine schnelle, durchdachte Plattform, die Job-Matching auf den Kopf stellt — passive Kandidat:innen werden erreichbar, Unternehmen sparen den Recruiting-Aufwand klassischer Portale.",
+    metrics: [
+      { value: "End-to-end", label: "Konzept → Design → Code" },
+      { value: "Match First", label: "Statt Bewerbungs-Marathon" },
+      { value: "DACH", label: "Markt-Fokus" },
+    ],
+    stack: ["Next.js", "TypeScript", "Postgres", "Tailwind", "Vercel"],
+    duration: "Konzept + Entwicklung",
+    year: 2026,
+    accent: "brand",
+    externalHref: "https://www.working-ben.de",
+  },
+  {
+    slug: "frauenarzt-zentrum-giessen",
+    title: "Interne KI-Prozessoptimierung im Frauenarzt-Zentrum",
+    client: "Frauenarzt-Zentrum · Gießen",
+    category: "KI-Lösung",
+    summary:
+      "Maßgeschneiderte interne KI-Systeme, die Routineaufgaben im Praxisalltag automatisieren und Ärzten und Personal mehr Zeit für Patientinnen verschaffen — DSGVO-konform und ohne Datenabfluss.",
+    hero: "Weniger Verwaltung, mehr Patientinnen-Zeit — durch KI im Hintergrund.",
+    problem:
+      "Im Praxisalltag bindet Verwaltung — Akten-Recherche, Dokumentation, interne Korrespondenz, Termin-Triage — Stunden, die in der Patientinnen-Versorgung fehlen. Standard-Cloud-Tools können sensible Patientendaten nicht ohne Weiteres rechtssicher verarbeiten.",
+    solution:
+      "Interne KI-Workflows, individuell auf die Prozesse des Praxiszentrums zugeschnitten. Daten verlassen das Praxisumfeld nicht ungewollt; die KI integriert sich in die bestehende Software-Landschaft und unterstützt das Team direkt dort, wo Aufgaben anfallen.",
+    outcome:
+      "Spürbar entlastetes Team, schnellere Bearbeitung wiederkehrender Aufgaben und mehr Fokus auf das, was wirklich zählt: die Patientinnen.",
+    metrics: [
+      { value: "DSGVO-konform", label: "Patientendaten geschützt" },
+      { value: "Maßgeschneidert", label: "Auf Praxis-Prozesse" },
+      { value: "Interne Pipeline", label: "Daten bleiben sicher" },
+    ],
+    stack: ["Python", "Claude", "Postgres", "EU-Hosting", "n8n"],
+    duration: "laufende Zusammenarbeit",
+    year: 2026,
+    accent: "green",
+  },
+  {
+    slug: "liian-fashion-support",
+    title: "KI-Support-Agent für LIIAN Damenbekleidung",
+    client: "LIIAN — Damenbekleidung Onlineshop",
+    category: "KI-Chatbot",
+    summary:
+      "KI-Agenten, die eingehende Kunden-E-Mails verstehen, kategorisieren und in der Markenstimme beantworten — von Größenberatung über Versandstatus bis Retouren.",
+    hero: "Inbox auf Autopilot — höfliche, korrekte Antworten in Markenstimme.",
+    problem:
+      "Online-Shops im Mode-Segment haben hohes E-Mail-Volumen: Größenfragen, Lieferstatus, Retouren-Wünsche, Reklamationen. Standard-Auto-Replies wirken kalt, manuelle Beantwortung skaliert nicht und bindet das Team auch in Hochphasen.",
+    solution:
+      "KI-Agent, trainiert auf den LIIAN-Brand-Voice und die Produktdaten. Greift für Versandstatus auf das Shop-Backend zu, beantwortet Standardanfragen autonom und eskaliert nur unklare Fälle ans Team — mit vollständigem Audit-Log.",
+    outcome:
+      "Kundinnen erhalten innerhalb von Minuten passende Antworten in der LIIAN-Stimme — und das Team konzentriert sich auf Fälle, die wirklich Aufmerksamkeit brauchen.",
+    metrics: [
+      { value: "24/7", label: "Antwort innerhalb Minuten" },
+      { value: "Brand-Voice", label: "Trainiert auf LIIAN-Tonalität" },
+      { value: "EU-Hosting", label: "DSGVO-konform" },
+    ],
+    stack: ["Claude", "Next.js", "Postgres", "n8n", "Resend"],
+    duration: "laufender Betrieb",
+    year: 2026,
+    accent: "purple",
+  },
+  {
+    slug: "velos",
+    title: "Velos — KI-Fitness-, Lauf- und Ernährungs-Coach",
+    client: "FWStudios · Eigenprodukt",
+    category: "Mobile App",
+    summary:
+      "Komplette Trainings-, Lauf- und Ernährungs-App. Free-Tier mit GPS-Lauftracker und kuratierten Programmen, Velos Pro mit personalisierten KI-Trainings- und Ernährungsplänen.",
+    hero: "Personal Trainer, Lauf-Coach und Ernährungsberater — in einer App.",
+    problem:
+      "Wer ernsthaft trainiert, jongliert mit Workout-App, Lauf-Tracker und Ernährungs-Tagebuch. Personalisierte Pläne sind teuer, generische Pläne wirken nicht — und keiner adaptiert auf Performance, Recovery und Ziele.",
+    solution:
+      "Flutter-App mit Riverpod und dunklem Material-3-Design. Supabase-Backend in Frankfurt, GPS-Lauftracking via OpenStreetMap, KI-Pläne über Claude (Opus für strukturierte Plan-Generierung mit Tool-Use, Sonnet für Coach-Chat). Alle KI-Calls server-seitig in Edge Functions. Subscriptions plattformübergreifend via RevenueCat.",
+    outcome:
+      "Eine integrierte App, die Krafttraining, Ausdauer und Ernährung an einem Ort vereint — und mit Velos Pro adaptives KI-Coaching ohne Personal-Trainer-Preise liefert.",
+    metrics: [
+      { value: "Claude Opus + Sonnet", label: "KI-Coaching server-seitig" },
+      { value: "iOS · Android · Web", label: "3 Plattformen, 1 Codebase" },
+      { value: "EU-Hosting", label: "Supabase Frankfurt" },
+    ],
+    stack: ["Flutter", "Dart", "Supabase", "Claude (Anthropic)", "RevenueCat", "OpenStreetMap"],
+    duration: "Eigenprodukt · laufend",
+    year: 2026,
+    accent: "brand",
+  },
   {
     slug: "sparkoch",
     title: "SparKoch — KI-Koch-App, die Kühlschrank & Prospekte scannt",
@@ -66,150 +164,6 @@ export const PROJECTS: Project[] = [
     year: 2026,
     accent: "orange",
     appHref: "/apps/peinlich-nicht-zu-wissen",
-  },
-  {
-    slug: "liian-chatbot",
-    title: "KI-Chatbot, der Maklerleads automatisch qualifiziert",
-    client: "LIIAN — Immobilienmakler",
-    category: "KI-Chatbot",
-    summary:
-      "Auf der LIIAN-Website beantwortet der Bot Bewerterfragen, qualifiziert Verkaufsabsichten und übergibt heiße Leads direkt ins CRM.",
-    hero: "Vom Webformular zur 24/7-Lead-Maschine — ohne mehr Personal.",
-    problem:
-      "Die Maklerei verlor Anfragen außerhalb der Bürozeiten. Bewerber-Anfragen mussten manuell vorqualifiziert werden, was Stunden pro Tag kostete.",
-    solution:
-      "Wir trainierten den FWStudios-Chatbot auf Objekt-Daten, FAQs und Bewerterprozess. Der Bot stellt 6 Qualifikationsfragen, schickt Termin-Vorschläge und legt Leads im CRM an.",
-    outcome:
-      "Mehr qualifizierte Anfragen, deutlich kürzere Reaktionszeit und eine spürbare Entlastung des Vertriebsteams.",
-    metrics: [
-      { value: "+138%", label: "Qualifizierte Leads / Monat" },
-      { value: "<2 min", label: "Erstreaktion 24/7" },
-      { value: "−12 h", label: "Manuelle Arbeit / Woche" },
-    ],
-    stack: ["Next.js", "Claude", "Supabase", "Resend", "n8n"],
-    duration: "7 Tage",
-    year: 2025,
-    accent: "brand",
-  },
-  {
-    slug: "saas-platform",
-    title: "Productized SaaS für ein B2B-Tooling-Startup",
-    client: "Stealth-Startup",
-    category: "Plattform",
-    summary:
-      "Komplette SaaS-Plattform mit Auth, Teams, Stripe-Abrechnung und Admin-Dashboard — vom Whiteboard zum Launch in 6 Wochen.",
-    hero: "Vom Pitch-Deck zur produktiven SaaS — in 6 Wochen.",
-    problem:
-      "Der Gründer hatte Markt und Vision, aber kein Engineering-Team. Time-to-first-paying-customer war kritisch, um die Pre-Seed-Runde zu validieren.",
-    solution:
-      "Wir bauten die Plattform auf Next.js mit Postgres, Stripe-Subscriptions, Multi-Tenant-Auth und einem internen Admin. Iterative wöchentliche Demos.",
-    outcome:
-      "Launch nach 6 Wochen, erste zahlende Kunden in Woche 7, Pre-Seed geschlossen.",
-    metrics: [
-      { value: "6 Wochen", label: "Time-to-Launch" },
-      { value: "12", label: "Zahlende Kunden in Woche 7" },
-      { value: "Pre-Seed", label: "Geschlossen" },
-    ],
-    stack: ["Next.js", "Postgres", "Stripe", "Vercel", "Resend"],
-    duration: "6 Wochen",
-    year: 2025,
-    accent: "purple",
-  },
-  {
-    slug: "doc-ai",
-    title: "Dokumenten-KI für Versicherungs-Backoffice",
-    client: "Versicherungs-Mittelstand",
-    category: "KI-Lösung",
-    summary:
-      "Vertrags- und Schadensdokumente werden von einer KI-Pipeline klassifiziert, extrahiert und an das interne ERP übergeben.",
-    hero: "Manuelles Vertippen war einmal — KI extrahiert sauber.",
-    problem:
-      "Backoffice-Mitarbeitende tippten Daten aus PDFs in Excel und Salesforce. Hohe Fehlerquote, hohe Kosten.",
-    solution:
-      "RAG-Pipeline mit Claude für Klassifikation, dokumentenstrukturierte Extraktion und Validierung gegen Geschäftsregeln. Audit-Log inklusive.",
-    outcome:
-      "Drastische Beschleunigung beim Verarbeiten von Dokumenten und deutlich weniger Fehler im Datenbestand.",
-    metrics: [
-      { value: "−83%", label: "Bearbeitungszeit / Dokument" },
-      { value: "99.4%", label: "Extraktions-Genauigkeit" },
-      { value: "EU-Hosting", label: "DSGVO-konform" },
-    ],
-    stack: ["Python", "Claude", "Postgres", "Hetzner", "S3-kompatibel"],
-    duration: "8 Wochen",
-    year: 2024,
-    accent: "green",
-  },
-  {
-    slug: "mobile-loyalty-app",
-    title: "Loyalty-App für eine Premium-Bäckerei-Kette",
-    client: "Bäckerei-Kette · DACH",
-    category: "Mobile App",
-    summary:
-      "Native iOS- und Android-App mit Punkte-Sammlung, Mobile-Order, Filialfinder und Push-Kampagnen.",
-    hero: "Die App, die deine Stammkunden auch online stammkundig macht.",
-    problem:
-      "Die Kette verlor jüngere Kunden an Lieferdienste. Klassische Kundenkarten wurden nicht mehr genutzt.",
-    solution:
-      "React-Native-App mit Stempelpässen, In-App-Order, Push-Kampagnen und Backend-Integration zum Kassensystem. Apple Wallet & Google Wallet inklusive.",
-    outcome:
-      "Über 40k Downloads in 3 Monaten und ein deutlich höherer Wiederbesuch innerhalb der ersten 30 Tage.",
-    metrics: [
-      { value: "40k+", label: "Downloads in 90 Tagen" },
-      { value: "+27%", label: "Wiederbesuche / Kunde" },
-      { value: "4.7 ★", label: "App-Store-Rating" },
-    ],
-    stack: ["React Native", "Expo", "Supabase", "OneSignal", "Stripe"],
-    duration: "10 Wochen",
-    year: 2025,
-    accent: "orange",
-  },
-  {
-    slug: "internal-ops-platform",
-    title: "Internes Operations-Dashboard mit KI-Insights",
-    client: "E-Commerce · Fashion",
-    category: "Plattform",
-    summary:
-      "Ein zentrales Dashboard, das Bestand, Umsatz, Marketing-KPIs und Vorhersagen aus 9 Datenquellen zusammenführt.",
-    hero: "Eine Wahrheit. Neun Datenquellen. Live im Browser.",
-    problem:
-      "Geschäftsführung hatte 4 verschiedene Reportings aus Shopify, Meta, Google, ERP — keines davon stimmte mit dem anderen überein.",
-    solution:
-      "Datenpipeline mit täglichen ETLs, ein Dashboard mit Custom-Charts und KI-gestützter Anomalie-Erkennung. Forecasts pro Produktkategorie.",
-    outcome:
-      "Schnellere Reaktion auf Bestandsengpässe und ein einziges, verlässliches Reporting-System statt vier konkurrierender Quellen.",
-    metrics: [
-      { value: "−4 h", label: "Reporting-Aufwand / Woche" },
-      { value: "9 → 1", label: "Datenquellen vereinheitlicht" },
-      { value: "Realtime", label: "Statt Tagesbericht" },
-    ],
-    stack: ["Next.js", "Postgres", "dbt", "Recharts", "Claude"],
-    duration: "12 Wochen",
-    year: 2024,
-    accent: "brand",
-  },
-  {
-    slug: "mobile-fitness-coach",
-    title: "KI-Fitness-Coach als Mobile-App",
-    client: "Personal-Coach-Studio",
-    category: "Mobile App",
-    summary:
-      "Mobile-App mit personalisierten Trainingsplänen, KI-Coaching, Video-Tutorials und Apple-Health-Integration.",
-    hero: "Den Personal-Trainer in die Hosentasche gepackt.",
-    problem:
-      "Coach konnte nicht skalieren — jeder neue Kunde bedeutete eine 1:1-Stunde pro Woche.",
-    solution:
-      "App mit adaptiven Trainingsplänen (Claude), Video-Bibliothek, Workout-Tracking und Apple-Health-Sync. Premium-Features per In-App-Purchase.",
-    outcome:
-      "Die App ermöglichte dem Coach, deutlich mehr Kunden parallel zu betreuen, ohne neue 1:1-Slots öffnen zu müssen.",
-    metrics: [
-      { value: "8×", label: "Mehr Kunden / Coach" },
-      { value: "73%", label: "30-Tage-Retention" },
-      { value: "iOS + Android", label: "Native Apps" },
-    ],
-    stack: ["React Native", "Claude", "RevenueCat", "Supabase"],
-    duration: "9 Wochen",
-    year: 2025,
-    accent: "purple",
   },
 ];
 
