@@ -2,7 +2,7 @@ import { ArrowRight, Mail, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Container, Section } from "@/components/ui/container";
 
-const CONTACT_EMAIL = "accounts@fwstudios.de";
+const CONTACT_EMAIL = "finn@fwstudios.de";
 const CONTACT_PHONE_DISPLAY = "0162 7793119";
 const CONTACT_PHONE_TEL = "+4901627793119";
 

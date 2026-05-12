@@ -2,7 +2,7 @@ import Link from "next/link";
 import { CalendarCheck, Mail, Phone } from "lucide-react";
 import { Logo } from "./logo";
 
-const CONTACT_EMAIL = "accounts@fwstudios.de";
+const CONTACT_EMAIL = "finn@fwstudios.de";
 const CONTACT_PHONE_DISPLAY = "0162 7793119";
 const CONTACT_PHONE_TEL = "+4901627793119";
 

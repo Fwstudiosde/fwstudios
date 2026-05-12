@@ -4,6 +4,7 @@ import {
   getChatbotConfig,
   getConversationBySession,
   getDecryptedApiKey,
+  markConversationBooking,
   markConversationLead,
 } from "@/lib/chatbot/storage";
 import { handleChat } from "@/lib/chatbot/handle";
@@ -81,10 +82,14 @@ export async function POST(req: Request) {
     if (out.leadCaptured) {
       await markConversationLead(sessionId, out.leadCaptured);
     }
+    if (out.bookingCreated) {
+      await markConversationBooking(sessionId, out.bookingCreated);
+    }
 
     return NextResponse.json({
       reply: out.reply,
       leadCaptured: out.leadCaptured ?? null,
+      bookingCreated: out.bookingCreated ?? null,
     });
   } catch (err) {
     return NextResponse.json(

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Script from "next/script";
-import { Mail, Phone } from "lucide-react";
+import { Mail } from "lucide-react";
 import { Container, Section, Eyebrow } from "@/components/ui/container";
 
 const CAL_LINK = process.env.NEXT_PUBLIC_CAL_LINK ?? "fwstudios/30min";
@@ -11,9 +11,7 @@ const CAL_ORIGIN =
 const CAL_EMBED_URL = `${CAL_ORIGIN}/embed/embed.js`;
 const CAL_NS = CAL_LINK.split("/").pop() || "30min";
 
-const CONTACT_EMAIL = "accounts@fwstudios.de";
-const CONTACT_PHONE_DISPLAY = "0162 7793119";
-const CONTACT_PHONE_TEL = "+4901627793119";
+const CONTACT_EMAIL = "finn@fwstudios.de";
 
 export function Booking() {
   React.useEffect(() => {
@@ -64,7 +62,7 @@ export function Booking() {
         </div>
         <div className="mx-auto mt-6 flex max-w-4xl flex-col items-center justify-center gap-3 text-center sm:mt-8 sm:flex-row sm:gap-8">
           <p className="text-sm text-fg-muted">
-            Lieber direkt schreiben oder anrufen?
+            Lieber direkt schreiben?
           </p>
           <a
             href={`mailto:${CONTACT_EMAIL}`}
@@ -72,13 +70,6 @@ export function Booking() {
           >
             <Mail className="size-4" />
             <span className="break-all">{CONTACT_EMAIL}</span>
-          </a>
-          <a
-            href={`tel:${CONTACT_PHONE_TEL}`}
-            className="inline-flex min-h-[40px] items-center gap-2 text-sm font-medium text-fg hover:text-brand transition-colors"
-          >
-            <Phone className="size-4" />
-            {CONTACT_PHONE_DISPLAY}
           </a>
         </div>
       </Container>

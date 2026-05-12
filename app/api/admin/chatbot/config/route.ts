@@ -7,15 +7,22 @@ import {
 
 export const dynamic = "force-dynamic";
 
+function sanitize<T extends { apiKeyEnc?: unknown; cal?: { apiKeyEnc?: unknown } }>(
+  cfg: T
+) {
+  return {
+    ...cfg,
+    apiKeyEnc: undefined,
+    cal: cfg.cal ? { ...cfg.cal, apiKeyEnc: undefined } : undefined,
+  };
+}
+
 export async function GET() {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const cfg = await getChatbotConfig();
-  return NextResponse.json({
-    ...cfg,
-    apiKeyEnc: undefined,
-  });
+  return NextResponse.json(sanitize(cfg));
 }
 
 export async function PUT(req: Request) {
@@ -33,6 +40,7 @@ export async function PUT(req: Request) {
     patch.welcomeMessage = body.welcomeMessage;
   if (typeof body.toolsEnabled === "boolean") patch.toolsEnabled = body.toolsEnabled;
   if (typeof body.bookingUrl === "string") patch.bookingUrl = body.bookingUrl;
+
   if (
     body.leadCapture &&
     typeof body.leadCapture === "object" &&
@@ -46,6 +54,46 @@ export async function PUT(req: Request) {
     };
   }
 
+  if (body.cal && typeof body.cal === "object" && body.cal !== null) {
+    const c = body.cal as Record<string, unknown>;
+    const current = (await getChatbotConfig()).cal;
+    patch.cal = {
+      apiKeyEnc: current.apiKeyEnc,
+      hasApiKey: current.hasApiKey,
+      eventTypeId:
+        typeof c.eventTypeId === "string"
+          ? c.eventTypeId.trim()
+          : current.eventTypeId,
+      eventDurationMinutes:
+        typeof c.eventDurationMinutes === "number"
+          ? c.eventDurationMinutes
+          : current.eventDurationMinutes,
+      timezone:
+        typeof c.timezone === "string" && c.timezone.trim()
+          ? c.timezone.trim()
+          : current.timezone,
+      defaultDaysAhead:
+        typeof c.defaultDaysAhead === "number"
+          ? Math.max(1, Math.min(60, c.defaultDaysAhead))
+          : current.defaultDaysAhead,
+    };
+  }
+
+  if (body.teaser && typeof body.teaser === "object" && body.teaser !== null) {
+    const t = body.teaser as Record<string, unknown>;
+    patch.teaser = {
+      enabled: typeof t.enabled === "boolean" ? t.enabled : true,
+      message:
+        typeof t.message === "string" && t.message.trim()
+          ? t.message.slice(0, 200)
+          : "Hi, kann ich dir helfen?",
+      delaySeconds:
+        typeof t.delaySeconds === "number"
+          ? Math.max(0, Math.min(120, Math.round(t.delaySeconds)))
+          : 5,
+    };
+  }
+
   if ("apiKey" in body) {
     if (body.apiKey === null || body.apiKey === "") {
       patch.apiKey = null;
@@ -54,6 +102,14 @@ export async function PUT(req: Request) {
     }
   }
 
+  if ("calApiKey" in body) {
+    if (body.calApiKey === null || body.calApiKey === "") {
+      patch.calApiKey = null;
+    } else if (typeof body.calApiKey === "string" && body.calApiKey.length >= 8) {
+      patch.calApiKey = body.calApiKey;
+    }
+  }
+
   const next = await setChatbotConfig(patch);
-  return NextResponse.json({ ...next, apiKeyEnc: undefined });
+  return NextResponse.json(sanitize(next));
 }

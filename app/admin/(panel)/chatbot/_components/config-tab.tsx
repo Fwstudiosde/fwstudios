@@ -1,7 +1,16 @@
 "use client";
 
 import * as React from "react";
-import { Loader2, Save, KeyRound, Check, X } from "lucide-react";
+import {
+  Loader2,
+  Save,
+  KeyRound,
+  Check,
+  X,
+  CalendarClock,
+  MessageSquare,
+  PlayCircle,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ChatbotConfig } from "@/lib/chatbot/types";
 
@@ -23,7 +32,13 @@ export function ConfigTab({
 }) {
   const [draft, setDraft] = React.useState<ChatbotConfig>(config);
   const [apiKeyInput, setApiKeyInput] = React.useState("");
+  const [calApiKeyInput, setCalApiKeyInput] = React.useState("");
   const [saving, setSaving] = React.useState(false);
+  const [calTesting, setCalTesting] = React.useState(false);
+  const [calTestResult, setCalTestResult] = React.useState<{
+    ok: boolean;
+    text: string;
+  } | null>(null);
   const [status, setStatus] = React.useState<{
     kind: "ok" | "err";
     text: string;
@@ -31,6 +46,20 @@ export function ConfigTab({
 
   function setField<K extends keyof ChatbotConfig>(key: K, val: ChatbotConfig[K]) {
     setDraft((d) => ({ ...d, [key]: val }));
+  }
+
+  function setCalField<K extends keyof ChatbotConfig["cal"]>(
+    key: K,
+    val: ChatbotConfig["cal"][K]
+  ) {
+    setDraft((d) => ({ ...d, cal: { ...d.cal, [key]: val } }));
+  }
+
+  function setTeaserField<K extends keyof ChatbotConfig["teaser"]>(
+    key: K,
+    val: ChatbotConfig["teaser"][K]
+  ) {
+    setDraft((d) => ({ ...d, teaser: { ...d.teaser, [key]: val } }));
   }
 
   async function save() {
@@ -46,9 +75,19 @@ export function ConfigTab({
         toolsEnabled: draft.toolsEnabled,
         bookingUrl: draft.bookingUrl,
         leadCapture: draft.leadCapture,
+        cal: {
+          eventTypeId: draft.cal.eventTypeId,
+          eventDurationMinutes: draft.cal.eventDurationMinutes,
+          timezone: draft.cal.timezone,
+          defaultDaysAhead: draft.cal.defaultDaysAhead,
+        },
+        teaser: draft.teaser,
       };
       if (apiKeyInput.trim()) {
         body.apiKey = apiKeyInput.trim();
+      }
+      if (calApiKeyInput.trim()) {
+        body.calApiKey = calApiKeyInput.trim();
       }
       const res = await fetch("/api/admin/chatbot/config", {
         method: "PUT",
@@ -60,6 +99,7 @@ export function ConfigTab({
       setDraft(next);
       onConfigChange(next);
       setApiKeyInput("");
+      setCalApiKeyInput("");
       setStatus({ kind: "ok", text: "Gespeichert." });
     } catch (err) {
       setStatus({
@@ -92,6 +132,64 @@ export function ConfigTab({
       });
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function clearCalKey() {
+    setSaving(true);
+    setStatus(null);
+    try {
+      const res = await fetch("/api/admin/chatbot/config", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ calApiKey: null }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const next = (await res.json()) as ChatbotConfig;
+      setDraft(next);
+      onConfigChange(next);
+      setStatus({ kind: "ok", text: "Cal-Key entfernt." });
+    } catch (err) {
+      setStatus({
+        kind: "err",
+        text: err instanceof Error ? err.message : "Fehler",
+      });
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function testCal() {
+    setCalTesting(true);
+    setCalTestResult(null);
+    try {
+      const res = await fetch("/api/admin/chatbot/cal/test", {
+        method: "POST",
+      });
+      const data = (await res.json()) as
+        | {
+            ok: true;
+            totalSlots: number;
+            preview: { iso: string; label: string }[];
+            timezone: string;
+          }
+        | { ok: false; error: string };
+      if (data.ok) {
+        const lines = data.preview.map((p) => `• ${p.label}`).join("\n");
+        setCalTestResult({
+          ok: true,
+          text: `${data.totalSlots} freie Slots gefunden (TZ: ${data.timezone}). Nächste:\n${lines}`,
+        });
+      } else {
+        setCalTestResult({ ok: false, text: data.error });
+      }
+    } catch (err) {
+      setCalTestResult({
+        ok: false,
+        text: err instanceof Error ? err.message : "Test fehlgeschlagen",
+      });
+    } finally {
+      setCalTesting(false);
     }
   }
 
@@ -218,7 +316,7 @@ export function ConfigTab({
               onChange={(e) => setField("toolsEnabled", e.target.checked)}
               className="size-4 rounded border-border accent-brand"
             />
-            Tool-Use aktivieren (capture_lead, book_meeting)
+            Tool-Use aktivieren (capture_lead, list_available_slots, book_slot)
           </label>
           <label className="flex items-center gap-3 text-sm text-fg">
             <input
@@ -247,6 +345,175 @@ export function ConfigTab({
               className={inputCls}
             />
           </Field>
+        </div>
+      </Section>
+
+      <Section
+        title="Cal.com Live-Buchung"
+        icon={<CalendarClock className="size-4" />}
+      >
+        <div className="grid gap-4">
+          <div className="flex items-center gap-3 rounded-lg border border-border bg-white/[0.02] px-3 py-2.5 text-sm">
+            {draft.cal.hasApiKey ? (
+              <>
+                <Check className="size-4 text-success" />
+                <span className="text-fg">
+                  Cal API-Key hinterlegt — verschlüsselt gespeichert.
+                </span>
+                <button
+                  onClick={clearCalKey}
+                  className="ml-auto text-xs text-danger hover:underline"
+                  disabled={saving}
+                >
+                  Entfernen
+                </button>
+              </>
+            ) : (
+              <>
+                <X className="size-4 text-warning" />
+                <span className="text-fg-muted">
+                  Noch kein Cal-Key. Bot kann nur den Buchungslink posten,
+                  nicht direkt buchen.
+                </span>
+              </>
+            )}
+          </div>
+          <Field label="Cal API-Key (cal.com → Settings → Developer → API Keys)">
+            <input
+              value={calApiKeyInput}
+              onChange={(e) => setCalApiKeyInput(e.target.value)}
+              type="password"
+              placeholder="cal_live_…"
+              className={inputCls}
+              autoComplete="off"
+            />
+          </Field>
+          <div className="grid gap-4 lg:grid-cols-2">
+            <Field label="Event-Type-ID (Zahl)">
+              <input
+                value={draft.cal.eventTypeId}
+                onChange={(e) => setCalField("eventTypeId", e.target.value)}
+                placeholder="z.B. 1234567"
+                className={inputCls}
+              />
+            </Field>
+            <Field label="Termin-Dauer (Minuten)">
+              <input
+                type="number"
+                min={5}
+                max={240}
+                value={draft.cal.eventDurationMinutes}
+                onChange={(e) =>
+                  setCalField(
+                    "eventDurationMinutes",
+                    parseInt(e.target.value, 10) || 30
+                  )
+                }
+                className={inputCls}
+              />
+            </Field>
+            <Field label="Zeitzone">
+              <input
+                value={draft.cal.timezone}
+                onChange={(e) => setCalField("timezone", e.target.value)}
+                placeholder="Europe/Berlin"
+                className={inputCls}
+              />
+            </Field>
+            <Field label="Slot-Suchfenster (Tage im Voraus)">
+              <input
+                type="number"
+                min={1}
+                max={60}
+                value={draft.cal.defaultDaysAhead}
+                onChange={(e) =>
+                  setCalField(
+                    "defaultDaysAhead",
+                    parseInt(e.target.value, 10) || 14
+                  )
+                }
+                className={inputCls}
+              />
+            </Field>
+          </div>
+          <div className="flex items-center gap-3">
+            <Button
+              onClick={testCal}
+              disabled={calTesting || !draft.cal.hasApiKey || !draft.cal.eventTypeId}
+              variant="secondary"
+              size="sm"
+            >
+              {calTesting ? (
+                <>
+                  <Loader2 className="size-4 animate-spin" /> Teste …
+                </>
+              ) : (
+                <>
+                  <PlayCircle className="size-4" /> Slots abrufen
+                </>
+              )}
+            </Button>
+            {calTestResult && (
+              <span
+                className={`whitespace-pre-line text-xs ${
+                  calTestResult.ok ? "text-success" : "text-danger"
+                }`}
+              >
+                {calTestResult.text}
+              </span>
+            )}
+          </div>
+          <p className="text-xs text-fg-subtle">
+            Sobald Key + Event-Type gesetzt sind, holt der Bot live freie Slots
+            und bucht direkt im Chat — inkl. Cal-Bestätigungsmail an den User.
+          </p>
+        </div>
+      </Section>
+
+      <Section
+        title="Pop-up wenn Chat geschlossen"
+        icon={<MessageSquare className="size-4" />}
+      >
+        <div className="grid gap-4">
+          <label className="flex items-center gap-3 text-sm text-fg">
+            <input
+              type="checkbox"
+              checked={draft.teaser.enabled}
+              onChange={(e) => setTeaserField("enabled", e.target.checked)}
+              className="size-4 rounded border-border accent-brand"
+            />
+            Teaser-Bubble aktivieren
+          </label>
+          <div className="grid gap-4 lg:grid-cols-[1fr_180px]">
+            <Field label="Pop-up-Text">
+              <input
+                value={draft.teaser.message}
+                onChange={(e) => setTeaserField("message", e.target.value)}
+                placeholder="Hi, kann ich dir helfen?"
+                className={inputCls}
+                maxLength={200}
+              />
+            </Field>
+            <Field label="Verzögerung (Sekunden)">
+              <input
+                type="number"
+                min={0}
+                max={120}
+                value={draft.teaser.delaySeconds}
+                onChange={(e) =>
+                  setTeaserField(
+                    "delaySeconds",
+                    parseInt(e.target.value, 10) || 0
+                  )
+                }
+                className={inputCls}
+              />
+            </Field>
+          </div>
+          <p className="text-xs text-fg-subtle">
+            Erscheint einmal pro Browser-Session über dem geschlossenen Chat-Button.
+            User können wegklicken — sehen es dann nicht erneut.
+          </p>
         </div>
       </Section>
 

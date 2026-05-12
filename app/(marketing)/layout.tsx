@@ -18,7 +18,10 @@ export default async function MarketingLayout({
       <main className="relative">{children}</main>
       <SiteFooter />
       {config.hasApiKey && (
-        <ChatbotWidget welcomeMessage={config.welcomeMessage} />
+        <ChatbotWidget
+          welcomeMessage={config.welcomeMessage}
+          teaser={config.teaser}
+        />
       )}
       <CookieBanner />
     </>

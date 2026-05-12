@@ -42,26 +42,40 @@ export async function getChatbotConfig(): Promise<ChatbotConfig> {
     ...DEFAULT_CONFIG,
     ...raw,
     leadCapture: { ...DEFAULT_CONFIG.leadCapture, ...(raw.leadCapture ?? {}) },
+    cal: { ...DEFAULT_CONFIG.cal, ...(raw.cal ?? {}) },
+    teaser: { ...DEFAULT_CONFIG.teaser, ...(raw.teaser ?? {}) },
   };
   merged.hasApiKey = Boolean(merged.apiKeyEnc);
+  merged.cal.hasApiKey = Boolean(merged.cal.apiKeyEnc);
   return merged;
 }
 
 export async function setChatbotConfig(
-  patch: Partial<ChatbotConfig> & { apiKey?: string | null }
+  patch: Partial<ChatbotConfig> & {
+    apiKey?: string | null;
+    calApiKey?: string | null;
+  }
 ): Promise<ChatbotConfig> {
   const current = await getChatbotConfig();
   const next: ChatbotConfig = {
     ...current,
     ...patch,
     leadCapture: { ...current.leadCapture, ...(patch.leadCapture ?? {}) },
+    cal: { ...current.cal, ...(patch.cal ?? {}) },
+    teaser: { ...current.teaser, ...(patch.teaser ?? {}) },
     updatedAt: new Date().toISOString(),
   };
 
   if ("apiKey" in patch) {
     next.apiKeyEnc = patch.apiKey ? encryptSecret(patch.apiKey) : null;
   }
+  if ("calApiKey" in patch) {
+    next.cal.apiKeyEnc = patch.calApiKey
+      ? encryptSecret(patch.calApiKey)
+      : null;
+  }
   next.hasApiKey = Boolean(next.apiKeyEnc);
+  next.cal.hasApiKey = Boolean(next.cal.apiKeyEnc);
 
   await writeJson("chatbot-config.json", next);
   return next;
@@ -71,6 +85,12 @@ export async function getDecryptedApiKey(): Promise<string | null> {
   const config = await getChatbotConfig();
   if (!config.apiKeyEnc) return null;
   return decryptSecret(config.apiKeyEnc);
+}
+
+export async function getDecryptedCalApiKey(): Promise<string | null> {
+  const config = await getChatbotConfig();
+  if (!config.cal.apiKeyEnc) return null;
+  return decryptSecret(config.cal.apiKeyEnc);
 }
 
 // ---------- Sources ----------
@@ -242,6 +262,20 @@ export async function markConversationLead(
   const idx = items.findIndex((c) => c.sessionId === sessionId);
   if (idx === -1) return;
   items[idx].leadCaptured = lead;
+  await writeJson("chatbot-conversations.json", items);
+}
+
+export async function markConversationBooking(
+  sessionId: string,
+  booking: NonNullable<ChatConversation["bookingCreated"]>
+): Promise<void> {
+  const items = await readJson<ChatConversation[]>(
+    "chatbot-conversations.json",
+    []
+  );
+  const idx = items.findIndex((c) => c.sessionId === sessionId);
+  if (idx === -1) return;
+  items[idx].bookingCreated = booking;
   await writeJson("chatbot-conversations.json", items);
 }
 

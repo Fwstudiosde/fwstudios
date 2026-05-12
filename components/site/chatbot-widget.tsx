@@ -13,6 +13,7 @@ const QUICK = [
 ];
 
 const SESSION_KEY = "fw_chat_session";
+const TEASER_DISMISSED_KEY = "fw_chat_teaser_dismissed";
 
 function getOrCreateSession(): string {
   if (typeof window === "undefined") return "ssr";
@@ -27,7 +28,19 @@ function getOrCreateSession(): string {
   return id;
 }
 
-export function ChatbotWidget({ welcomeMessage }: { welcomeMessage: string }) {
+export type ChatbotTeaser = {
+  enabled: boolean;
+  message: string;
+  delaySeconds: number;
+};
+
+export function ChatbotWidget({
+  welcomeMessage,
+  teaser,
+}: {
+  welcomeMessage: string;
+  teaser: ChatbotTeaser;
+}) {
   const [open, setOpen] = React.useState(false);
   const [messages, setMessages] = React.useState<Msg[]>([
     { role: "bot", text: welcomeMessage },
@@ -35,11 +48,35 @@ export function ChatbotWidget({ welcomeMessage }: { welcomeMessage: string }) {
   const [input, setInput] = React.useState("");
   const [thinking, setThinking] = React.useState(false);
   const [sessionId, setSessionId] = React.useState<string>("");
+  const [teaserVisible, setTeaserVisible] = React.useState(false);
   const endRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     setSessionId(getOrCreateSession());
   }, []);
+
+  React.useEffect(() => {
+    if (!teaser.enabled || open) return;
+    if (typeof window === "undefined") return;
+    if (window.sessionStorage.getItem(TEASER_DISMISSED_KEY) === "1") return;
+    const t = window.setTimeout(
+      () => setTeaserVisible(true),
+      Math.max(0, teaser.delaySeconds) * 1000
+    );
+    return () => window.clearTimeout(t);
+  }, [teaser.enabled, teaser.delaySeconds, open]);
+
+  function dismissTeaser() {
+    setTeaserVisible(false);
+    if (typeof window !== "undefined") {
+      window.sessionStorage.setItem(TEASER_DISMISSED_KEY, "1");
+    }
+  }
+
+  function openFromTeaser() {
+    dismissTeaser();
+    setOpen(true);
+  }
 
   React.useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -79,6 +116,31 @@ export function ChatbotWidget({ welcomeMessage }: { welcomeMessage: string }) {
 
   return (
     <>
+      <div
+        className={cn(
+          "fixed bottom-24 right-5 z-40 max-w-[260px] transition-all duration-300",
+          teaserVisible && !open
+            ? "translate-y-0 opacity-100"
+            : "pointer-events-none translate-y-2 opacity-0"
+        )}
+      >
+        <div className="relative rounded-2xl rounded-br-sm border border-border bg-surface px-3.5 py-2.5 text-sm text-fg shadow-[0_8px_24px_-6px_rgba(0,0,0,0.5)]">
+          <button
+            onClick={openFromTeaser}
+            className="block text-left text-fg hover:text-brand transition-colors"
+          >
+            {teaser.message}
+          </button>
+          <button
+            onClick={dismissTeaser}
+            aria-label="Hinweis schließen"
+            className="absolute -right-2 -top-2 flex size-5 items-center justify-center rounded-full border border-border bg-bg text-fg-muted hover:text-fg"
+          >
+            <X className="size-3" />
+          </button>
+        </div>
+      </div>
+
       <button
         onClick={() => setOpen(true)}
         aria-label="Chat öffnen"

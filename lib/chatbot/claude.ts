@@ -95,9 +95,49 @@ export const CHATBOT_TOOLS: ClaudeTool[] = [
     },
   },
   {
+    name: "list_available_slots",
+    description:
+      "Returns the next available 30-minute consultation slots from the live Cal.com calendar. Use this when the user agrees to a call. Optional: narrow with from_date / to_date (ISO date YYYY-MM-DD) if the user asks for a specific timeframe.",
+    input_schema: {
+      type: "object",
+      properties: {
+        from_date: {
+          type: "string",
+          description: "Optional ISO date (YYYY-MM-DD) to start the search.",
+        },
+        to_date: {
+          type: "string",
+          description: "Optional ISO date (YYYY-MM-DD) to end the search.",
+        },
+      },
+    },
+  },
+  {
+    name: "book_slot",
+    description:
+      "Books a specific slot in the Cal.com calendar. ONLY call after list_available_slots returned slots AND the user picked one AND name + email are known. Use the exact ISO start string from list_available_slots.",
+    input_schema: {
+      type: "object",
+      properties: {
+        slot_start_iso: {
+          type: "string",
+          description:
+            "Exact slot start in ISO 8601 format, copied from list_available_slots output.",
+        },
+        name: { type: "string", description: "Attendee full name." },
+        email: { type: "string", description: "Attendee email address." },
+        notes: {
+          type: "string",
+          description: "Optional short note about what the user wants to discuss.",
+        },
+      },
+      required: ["slot_start_iso", "name", "email"],
+    },
+  },
+  {
     name: "book_meeting",
     description:
-      "Returns a public booking URL the user can use to schedule a 30-minute consultation. Use when the user wants to schedule a call.",
+      "Fallback: returns the public booking URL. Use ONLY if list_available_slots / book_slot are unavailable or the user explicitly asks for the link.",
     input_schema: {
       type: "object",
       properties: {},

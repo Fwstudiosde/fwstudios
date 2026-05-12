@@ -10,9 +10,9 @@ export const TESTIMONIALS: Testimonial[] = [
   {
     quote:
       "Innerhalb von einer Woche stand der Chatbot — und nach zwei Wochen war er ohne Wenn und Aber Teil unseres Verkaufsteams. Hat sich nach drei Monaten bezahlt gemacht.",
-    author: "Tim Hauser",
+    author: "T. Hauser",
     role: "Geschäftsführer",
-    company: "LIIAN Immobilien",
+    company: "Immobilien · DACH",
     initials: "TH",
   },
   {

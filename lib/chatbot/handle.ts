@@ -10,6 +10,13 @@ import {
 import { ChatbotConfig } from "./types";
 import { buildSystemPrompt } from "./prompt";
 import { createLead } from "@/lib/storage";
+import {
+  createBooking,
+  defaultSlotWindow,
+  formatSlotForHumans,
+  listAvailableSlots,
+} from "./cal";
+import { getDecryptedCalApiKey } from "./storage";
 
 export type HandleInput = {
   config: ChatbotConfig;
@@ -29,6 +36,12 @@ export type HandleOutput = {
   inputTokens: number;
   outputTokens: number;
   leadCaptured?: { name?: string; email?: string; message?: string };
+  bookingCreated?: {
+    slotIso: string;
+    name: string;
+    email: string;
+    bookingId?: string;
+  };
 };
 
 export async function handleChat(input: HandleInput): Promise<HandleOutput> {
@@ -44,8 +57,9 @@ export async function handleChat(input: HandleInput): Promise<HandleOutput> {
   let inputTokens = 0;
   let outputTokens = 0;
   let leadCaptured: HandleOutput["leadCaptured"];
+  let bookingCreated: HandleOutput["bookingCreated"];
 
-  for (let hop = 0; hop < 3; hop++) {
+  for (let hop = 0; hop < 5; hop++) {
     const res = await callClaude({
       apiKey,
       model: config.model,
@@ -66,6 +80,7 @@ export async function handleChat(input: HandleInput): Promise<HandleOutput> {
         inputTokens,
         outputTokens,
         leadCaptured,
+        bookingCreated,
       };
     }
 
@@ -113,6 +128,141 @@ export async function handleChat(input: HandleInput): Promise<HandleOutput> {
             is_error: true,
           });
         }
+      } else if (tu.name === "list_available_slots") {
+        const calKey = await getDecryptedCalApiKey();
+        if (!calKey || !config.cal.eventTypeId) {
+          toolResults.push({
+            type: "tool_result",
+            tool_use_id: tu.id,
+            content:
+              "error: cal_not_configured — fall back to book_meeting and offer the booking URL.",
+            is_error: true,
+          });
+          continue;
+        }
+        const fromDate =
+          typeof tu.input.from_date === "string" ? tu.input.from_date : undefined;
+        const toDate =
+          typeof tu.input.to_date === "string" ? tu.input.to_date : undefined;
+        const window = defaultSlotWindow(config.cal.defaultDaysAhead);
+        const startIso = fromDate
+          ? new Date(`${fromDate}T00:00:00Z`).toISOString()
+          : window.startIso;
+        const endIso = toDate
+          ? new Date(`${toDate}T23:59:59Z`).toISOString()
+          : window.endIso;
+
+        const slotsRes = await listAvailableSlots({
+          apiKey: calKey,
+          eventTypeId: config.cal.eventTypeId,
+          durationMinutes: config.cal.eventDurationMinutes,
+          timezone: config.cal.timezone,
+          startIso,
+          endIso,
+        });
+        if (!slotsRes.ok) {
+          toolResults.push({
+            type: "tool_result",
+            tool_use_id: tu.id,
+            content: `error: ${slotsRes.error}`,
+            is_error: true,
+          });
+          continue;
+        }
+        const limited = slotsRes.slots.slice(0, 6);
+        const formatted = limited.map((s, i) => ({
+          n: i + 1,
+          start_iso: s.start,
+          label: formatSlotForHumans(s.start, config.cal.timezone),
+        }));
+        toolResults.push({
+          type: "tool_result",
+          tool_use_id: tu.id,
+          content: JSON.stringify({
+            timezone: config.cal.timezone,
+            slots: formatted,
+            note:
+              formatted.length === 0
+                ? "no slots in window — propose a different timeframe or send book_meeting URL"
+                : "show 3-4 of these in plain text, ask user which fits",
+          }),
+        });
+      } else if (tu.name === "book_slot") {
+        const slotIso =
+          typeof tu.input.slot_start_iso === "string"
+            ? tu.input.slot_start_iso
+            : undefined;
+        const name =
+          typeof tu.input.name === "string" ? tu.input.name.trim() : undefined;
+        const email =
+          typeof tu.input.email === "string" ? tu.input.email.trim() : undefined;
+        const notes =
+          typeof tu.input.notes === "string" ? tu.input.notes : undefined;
+        if (!slotIso || !name || !email) {
+          toolResults.push({
+            type: "tool_result",
+            tool_use_id: tu.id,
+            content: "error: slot_start_iso, name and email are required",
+            is_error: true,
+          });
+          continue;
+        }
+        const calKey = await getDecryptedCalApiKey();
+        if (!calKey || !config.cal.eventTypeId) {
+          toolResults.push({
+            type: "tool_result",
+            tool_use_id: tu.id,
+            content: "error: cal_not_configured",
+            is_error: true,
+          });
+          continue;
+        }
+        const bookRes = await createBooking({
+          apiKey: calKey,
+          eventTypeId: config.cal.eventTypeId,
+          startIso: slotIso,
+          name,
+          email,
+          timezone: config.cal.timezone,
+          notes,
+        });
+        if (!bookRes.ok) {
+          toolResults.push({
+            type: "tool_result",
+            tool_use_id: tu.id,
+            content: `error: ${bookRes.error}`,
+            is_error: true,
+          });
+          continue;
+        }
+        bookingCreated = {
+          slotIso,
+          name,
+          email,
+          bookingId: bookRes.bookingId,
+        };
+        try {
+          await createLead({
+            email,
+            name,
+            message: notes ?? `Termin gebucht: ${slotIso}`,
+            source: `chatbot-booking:${source}`,
+          });
+          leadCaptured = { email, name, message: notes };
+        } catch {
+          // lead creation is best-effort; booking succeeded
+        }
+        toolResults.push({
+          type: "tool_result",
+          tool_use_id: tu.id,
+          content: JSON.stringify({
+            ok: true,
+            booking_id: bookRes.bookingId,
+            confirmation_for: formatSlotForHumans(slotIso, config.cal.timezone),
+            note:
+              "confirm to user in 1-2 sentences, mention they'll get a Cal email shortly",
+          }),
+        });
       } else if (tu.name === "book_meeting") {
         toolResults.push({
           type: "tool_result",
@@ -134,9 +284,10 @@ export async function handleChat(input: HandleInput): Promise<HandleOutput> {
 
   return {
     reply:
-      "Entschuldigung — die Konversation wurde abgebrochen, weil zu viele Tool-Aufrufe nacheinander nötig waren. Bitte stell deine Frage nochmal kürzer oder buche direkt einen Termin.",
+      "Hmm, das hat gerade nicht geklappt. Magst du es nochmal kurz anders formulieren — oder ich schick dir den direkten Buchungslink?",
     inputTokens,
     outputTokens,
     leadCaptured,
+    bookingCreated,
   };
 }
