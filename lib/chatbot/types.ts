@@ -6,9 +6,12 @@ export type ChatToolName =
   | "list_available_slots"
   | "book_slot";
 
+export type ApiKeySource = "env" | "file" | null;
+
 export type CalConfig = {
   apiKeyEnc: string | null;
   hasApiKey: boolean;
+  apiKeySource: ApiKeySource;
   eventTypeId: string;
   eventDurationMinutes: number;
   timezone: string;
@@ -24,6 +27,7 @@ export type TeaserConfig = {
 export type ChatbotConfig = {
   apiKeyEnc: string | null;
   hasApiKey: boolean;
+  apiKeySource: ApiKeySource;
   model: string;
   temperature: number;
   maxTokens: number;
@@ -116,6 +120,7 @@ Was du NICHT machst:
 export const DEFAULT_CONFIG: ChatbotConfig = {
   apiKeyEnc: null,
   hasApiKey: false,
+  apiKeySource: null,
   model: "claude-sonnet-4-6",
   temperature: 0.6,
   maxTokens: 1024,
@@ -131,6 +136,7 @@ export const DEFAULT_CONFIG: ChatbotConfig = {
   cal: {
     apiKeyEnc: null,
     hasApiKey: false,
+    apiKeySource: null,
     eventTypeId: "",
     eventDurationMinutes: 30,
     timezone: "Europe/Berlin",

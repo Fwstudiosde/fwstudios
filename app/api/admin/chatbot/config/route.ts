@@ -60,6 +60,7 @@ export async function PUT(req: Request) {
     patch.cal = {
       apiKeyEnc: current.apiKeyEnc,
       hasApiKey: current.hasApiKey,
+      apiKeySource: current.apiKeySource,
       eventTypeId:
         typeof c.eventTypeId === "string"
           ? c.eventTypeId.trim()

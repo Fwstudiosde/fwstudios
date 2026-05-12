@@ -198,10 +198,23 @@ export function ConfigTab({
       <Section title="Anthropic API-Key" icon={<KeyRound className="size-4" />}>
         <div className="grid gap-3">
           <div className="flex items-center gap-3 rounded-lg border border-border bg-white/[0.02] px-3 py-2.5 text-sm">
-            {draft.hasApiKey ? (
+            {draft.apiKeySource === "env" ? (
               <>
                 <Check className="size-4 text-success" />
-                <span className="text-fg">Key hinterlegt — verschlüsselt gespeichert.</span>
+                <span className="text-fg">
+                  Key aus Umgebungsvariable (
+                  <code className="text-fg-muted">ANTHROPIC_API_KEY</code>)
+                  — überlebt alle Deploys.
+                </span>
+              </>
+            ) : draft.apiKeySource === "file" ? (
+              <>
+                <Check className="size-4 text-success" />
+                <span className="text-fg">
+                  Key im verschlüsselten Datei-Storage. Für Render-Deploys
+                  besser <code className="text-fg-muted">ANTHROPIC_API_KEY</code>{" "}
+                  als Env-Variable setzen.
+                </span>
                 <button
                   onClick={clearKey}
                   className="ml-auto text-xs text-danger hover:underline"
@@ -214,24 +227,28 @@ export function ConfigTab({
               <>
                 <X className="size-4 text-warning" />
                 <span className="text-fg-muted">
-                  Noch kein Key. Der Bot ist inaktiv, bis ein gültiger Key
-                  hinterlegt ist.
+                  Noch kein Key. Setz <code>ANTHROPIC_API_KEY</code> als Env-
+                  Variable oder trag ihn unten ein.
                 </span>
               </>
             )}
           </div>
-          <input
-            value={apiKeyInput}
-            onChange={(e) => setApiKeyInput(e.target.value)}
-            type="password"
-            placeholder="sk-ant-…"
-            className={inputCls}
-            autoComplete="off"
-          />
-          <p className="text-xs text-fg-subtle">
-            Wird mit AES-256-GCM verschlüsselt im Daten-Verzeichnis gespeichert.
-            Niemals an den Browser zurückgegeben.
-          </p>
+          {draft.apiKeySource !== "env" && (
+            <>
+              <input
+                value={apiKeyInput}
+                onChange={(e) => setApiKeyInput(e.target.value)}
+                type="password"
+                placeholder="sk-ant-…"
+                className={inputCls}
+                autoComplete="off"
+              />
+              <p className="text-xs text-fg-subtle">
+                Wird mit AES-256-GCM verschlüsselt im Daten-Verzeichnis
+                gespeichert. Niemals an den Browser zurückgegeben.
+              </p>
+            </>
+          )}
         </div>
       </Section>
 
@@ -354,11 +371,22 @@ export function ConfigTab({
       >
         <div className="grid gap-4">
           <div className="flex items-center gap-3 rounded-lg border border-border bg-white/[0.02] px-3 py-2.5 text-sm">
-            {draft.cal.hasApiKey ? (
+            {draft.cal.apiKeySource === "env" ? (
               <>
                 <Check className="size-4 text-success" />
                 <span className="text-fg">
-                  Cal API-Key hinterlegt — verschlüsselt gespeichert.
+                  Cal-Key aus Umgebungsvariable (
+                  <code className="text-fg-muted">CAL_API_KEY</code>) — überlebt
+                  alle Deploys.
+                </span>
+              </>
+            ) : draft.cal.apiKeySource === "file" ? (
+              <>
+                <Check className="size-4 text-success" />
+                <span className="text-fg">
+                  Cal-Key im verschlüsselten Datei-Storage. Für Render-Deploys
+                  besser <code className="text-fg-muted">CAL_API_KEY</code> als
+                  Env-Variable setzen.
                 </span>
                 <button
                   onClick={clearCalKey}
@@ -378,16 +406,18 @@ export function ConfigTab({
               </>
             )}
           </div>
-          <Field label="Cal API-Key (cal.com → Settings → Developer → API Keys)">
-            <input
-              value={calApiKeyInput}
-              onChange={(e) => setCalApiKeyInput(e.target.value)}
-              type="password"
-              placeholder="cal_live_…"
-              className={inputCls}
-              autoComplete="off"
-            />
-          </Field>
+          {draft.cal.apiKeySource !== "env" && (
+            <Field label="Cal API-Key (cal.com → Settings → Developer → API Keys)">
+              <input
+                value={calApiKeyInput}
+                onChange={(e) => setCalApiKeyInput(e.target.value)}
+                type="password"
+                placeholder="cal_live_…"
+                className={inputCls}
+                autoComplete="off"
+              />
+            </Field>
+          )}
           <div className="grid gap-4 lg:grid-cols-2">
             <Field label="Event-Type (URL, username/slug oder ID)">
               <input

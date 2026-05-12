@@ -33,6 +33,16 @@ async function writeJson<T>(file: string, value: T): Promise<void> {
 
 // ---------- Config ----------
 
+function envAnthropicKey(): string | null {
+  const v = process.env.ANTHROPIC_API_KEY;
+  return v && v.trim() ? v.trim() : null;
+}
+
+function envCalKey(): string | null {
+  const v = process.env.CAL_API_KEY;
+  return v && v.trim() ? v.trim() : null;
+}
+
 export async function getChatbotConfig(): Promise<ChatbotConfig> {
   const raw = await readJson<Partial<ChatbotConfig>>(
     "chatbot-config.json",
@@ -45,8 +55,29 @@ export async function getChatbotConfig(): Promise<ChatbotConfig> {
     cal: { ...DEFAULT_CONFIG.cal, ...(raw.cal ?? {}) },
     teaser: { ...DEFAULT_CONFIG.teaser, ...(raw.teaser ?? {}) },
   };
-  merged.hasApiKey = Boolean(merged.apiKeyEnc);
-  merged.cal.hasApiKey = Boolean(merged.cal.apiKeyEnc);
+
+  if (envAnthropicKey()) {
+    merged.hasApiKey = true;
+    merged.apiKeySource = "env";
+  } else if (merged.apiKeyEnc) {
+    merged.hasApiKey = true;
+    merged.apiKeySource = "file";
+  } else {
+    merged.hasApiKey = false;
+    merged.apiKeySource = null;
+  }
+
+  if (envCalKey()) {
+    merged.cal.hasApiKey = true;
+    merged.cal.apiKeySource = "env";
+  } else if (merged.cal.apiKeyEnc) {
+    merged.cal.hasApiKey = true;
+    merged.cal.apiKeySource = "file";
+  } else {
+    merged.cal.hasApiKey = false;
+    merged.cal.apiKeySource = null;
+  }
+
   return merged;
 }
 
@@ -82,12 +113,16 @@ export async function setChatbotConfig(
 }
 
 export async function getDecryptedApiKey(): Promise<string | null> {
+  const fromEnv = envAnthropicKey();
+  if (fromEnv) return fromEnv;
   const config = await getChatbotConfig();
   if (!config.apiKeyEnc) return null;
   return decryptSecret(config.apiKeyEnc);
 }
 
 export async function getDecryptedCalApiKey(): Promise<string | null> {
+  const fromEnv = envCalKey();
+  if (fromEnv) return fromEnv;
   const config = await getChatbotConfig();
   if (!config.cal.apiKeyEnc) return null;
   return decryptSecret(config.cal.apiKeyEnc);
