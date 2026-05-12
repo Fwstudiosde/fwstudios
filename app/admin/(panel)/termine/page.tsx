@@ -30,7 +30,7 @@ export default async function TerminePage() {
   const config = await getChatbotConfig();
   const apiKey = await getDecryptedCalApiKey();
 
-  if (!apiKey || !config.cal.eventTypeId) {
+  if (!apiKey) {
     return (
       <>
         <PageHeader
@@ -43,8 +43,9 @@ export default async function TerminePage() {
             Cal.com noch nicht verbunden
           </h2>
           <p className="mx-auto mt-1.5 max-w-md text-sm text-fg-muted">
-            Hinterleg in der Chatbot-Konfiguration deinen Cal API-Key und
-            Event-Type, damit hier deine Termine erscheinen.
+            Setz <code>CAL_API_KEY</code> als Env-Variable oder hinterleg den
+            Cal-Key in der Chatbot-Konfiguration, damit hier deine Termine
+            erscheinen.
           </p>
           <Link
             href="/admin/chatbot"
@@ -65,6 +66,8 @@ export default async function TerminePage() {
     now.getTime() + config.cal.defaultDaysAhead * 24 * 60 * 60 * 1000
   );
 
+  const hasEventType = Boolean(config.cal.eventTypeId);
+
   const [bookingsRes, slotsRes, conversations] = await Promise.all([
     listBookings({
       apiKey,
@@ -73,22 +76,28 @@ export default async function TerminePage() {
       beforeStartIso: future.toISOString(),
       take: 100,
     }),
-    listAvailableSlots({
-      apiKey,
-      apiBase,
-      eventTypeId: config.cal.eventTypeId,
-      durationMinutes: config.cal.eventDurationMinutes,
-      timezone: config.cal.timezone,
-      startIso: now.toISOString(),
-      endIso: slotWindowEnd.toISOString(),
-    }),
+    hasEventType
+      ? listAvailableSlots({
+          apiKey,
+          apiBase,
+          eventTypeId: config.cal.eventTypeId,
+          durationMinutes: config.cal.eventDurationMinutes,
+          timezone: config.cal.timezone,
+          startIso: now.toISOString(),
+          endIso: slotWindowEnd.toISOString(),
+        })
+      : Promise.resolve({ ok: true as const, slots: [] as CalSlot[] }),
     listConversations(),
   ]);
 
   const bookings: CalBooking[] = bookingsRes.ok ? bookingsRes.bookings : [];
   const slots: CalSlot[] = slotsRes.ok ? slotsRes.slots : [];
   const bookingsError = bookingsRes.ok ? null : bookingsRes.error;
-  const slotsError = slotsRes.ok ? null : slotsRes.error;
+  const slotsError = slotsRes.ok
+    ? hasEventType
+      ? null
+      : "Event-Type noch nicht gesetzt — freie Slots nicht abrufbar. In der Chatbot-Konfiguration nachholen."
+    : slotsRes.error;
 
   const chatbotRefs: ChatbotBookingRef[] = conversations
     .filter((c) => c.bookingCreated)
