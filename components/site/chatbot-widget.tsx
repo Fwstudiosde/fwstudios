@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Bot, Send, X, Sparkles } from "lucide-react";
+import { Bot, Send, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Msg = { role: "bot" | "user"; text: string };
@@ -245,12 +245,6 @@ export function ChatbotWidget({
             <Send className="size-4" />
           </button>
         </form>
-        <div className="border-t border-border px-3 py-2 text-[10px] text-fg-subtle">
-          <span className="inline-flex items-center gap-1">
-            <Sparkles className="size-3 text-brand" />
-            FWStudios Chatbot · Powered by Claude
-          </span>
-        </div>
       </div>
     </>
   );

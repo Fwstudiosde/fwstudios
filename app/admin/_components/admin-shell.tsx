@@ -16,12 +16,14 @@ import {
   BarChart3,
   Send,
   Bot,
+  Calendar,
 } from "lucide-react";
 import { Logo } from "@/components/site/logo";
 import { cn } from "@/lib/utils";
 
 const NAV = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/admin/termine", label: "Termine", icon: Calendar },
   { href: "/admin/chatbot", label: "Chatbot", icon: Bot },
   { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/admin/finanzen", label: "Finanzen", icon: Wallet },

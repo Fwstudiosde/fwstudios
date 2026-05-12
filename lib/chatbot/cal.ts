@@ -325,6 +325,97 @@ export async function createBooking(
   };
 }
 
+export type CalBooking = {
+  id: number | string;
+  uid?: string;
+  title?: string;
+  description?: string;
+  start: string;
+  end?: string;
+  duration?: number;
+  status?: string;
+  cancellationReason?: string;
+  reschedulingReason?: string;
+  rescheduleUri?: string;
+  rescheduleUrl?: string;
+  meetingUrl?: string;
+  location?: string;
+  attendees?: Array<{
+    name?: string;
+    email?: string;
+    timeZone?: string;
+    language?: string;
+  }>;
+  eventType?: { id?: number | string; slug?: string };
+  hosts?: Array<{ name?: string; email?: string; username?: string }>;
+  createdAt?: string;
+  bookingFieldsResponses?: Record<string, unknown>;
+};
+
+export type CalListBookingsInput = {
+  apiKey: string;
+  apiBase: string;
+  afterStartIso?: string;
+  beforeStartIso?: string;
+  take?: number;
+};
+
+export type CalListBookingsResult =
+  | { ok: true; bookings: CalBooking[] }
+  | { ok: false; error: string };
+
+export async function listBookings(
+  input: CalListBookingsInput
+): Promise<CalListBookingsResult> {
+  const params = new URLSearchParams();
+  if (input.afterStartIso) params.set("afterStart", input.afterStartIso);
+  if (input.beforeStartIso) params.set("beforeStart", input.beforeStartIso);
+  params.set("take", String(Math.min(input.take ?? 100, 100)));
+
+  let res: Response;
+  try {
+    res = await fetch(`${input.apiBase}/bookings?${params.toString()}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${input.apiKey}`,
+        "cal-api-version": BOOKINGS_API_VERSION,
+      },
+      signal: AbortSignal.timeout(15_000),
+    });
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : "network error",
+    };
+  }
+
+  const text = await res.text();
+  let json: {
+    status?: string;
+    data?: CalBooking[];
+    error?: { message?: string };
+  };
+  try {
+    json = JSON.parse(text);
+  } catch {
+    return {
+      ok: false,
+      error: `Cal bookings ${res.status}: ${text.slice(0, 200)}`,
+    };
+  }
+
+  if (!res.ok) {
+    return {
+      ok: false,
+      error: json.error?.message ?? `Cal bookings ${res.status}`,
+    };
+  }
+
+  const bookings = (json.data ?? []).slice();
+  bookings.sort((a, b) => a.start.localeCompare(b.start));
+  return { ok: true, bookings };
+}
+
 export function defaultSlotWindow(daysAhead: number): {
   startIso: string;
   endIso: string;
