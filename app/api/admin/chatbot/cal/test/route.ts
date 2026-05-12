@@ -7,6 +7,7 @@ import {
 import {
   defaultSlotWindow,
   formatSlotForHumans,
+  getCalApiBase,
   listAvailableSlots,
 } from "@/lib/chatbot/cal";
 
@@ -35,6 +36,7 @@ export async function POST() {
   const { startIso, endIso } = defaultSlotWindow(config.cal.defaultDaysAhead);
   const res = await listAvailableSlots({
     apiKey,
+    apiBase: getCalApiBase(config.bookingUrl),
     eventTypeId: config.cal.eventTypeId,
     durationMinutes: config.cal.eventDurationMinutes,
     timezone: config.cal.timezone,

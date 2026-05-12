@@ -389,11 +389,11 @@ export function ConfigTab({
             />
           </Field>
           <div className="grid gap-4 lg:grid-cols-2">
-            <Field label="Event-Type-ID (Zahl)">
+            <Field label="Event-Type (URL, username/slug oder ID)">
               <input
                 value={draft.cal.eventTypeId}
                 onChange={(e) => setCalField("eventTypeId", e.target.value)}
-                placeholder="z.B. 1234567"
+                placeholder="z.B. https://cal.eu/fwstudios/30min"
                 className={inputCls}
               />
             </Field>
@@ -464,8 +464,11 @@ export function ConfigTab({
             )}
           </div>
           <p className="text-xs text-fg-subtle">
-            Sobald Key + Event-Type gesetzt sind, holt der Bot live freie Slots
-            und bucht direkt im Chat — inkl. Cal-Bestätigungsmail an den User.
+            Du kannst die ganze Event-URL einfügen (z.B.{" "}
+            <code>https://cal.eu/fwstudios/30min</code>) — die numerische ID
+            wird automatisch aus der Cal-API geholt. Sobald Key + Event-Type
+            gesetzt sind, holt der Bot live freie Slots und bucht direkt im
+            Chat — inkl. Cal-Bestätigungsmail an den User.
           </p>
         </div>
       </Section>

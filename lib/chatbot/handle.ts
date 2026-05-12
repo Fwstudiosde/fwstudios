@@ -14,6 +14,7 @@ import {
   createBooking,
   defaultSlotWindow,
   formatSlotForHumans,
+  getCalApiBase,
   listAvailableSlots,
 } from "./cal";
 import { getDecryptedCalApiKey } from "./storage";
@@ -154,6 +155,7 @@ export async function handleChat(input: HandleInput): Promise<HandleOutput> {
 
         const slotsRes = await listAvailableSlots({
           apiKey: calKey,
+          apiBase: getCalApiBase(config.bookingUrl),
           eventTypeId: config.cal.eventTypeId,
           durationMinutes: config.cal.eventDurationMinutes,
           timezone: config.cal.timezone,
@@ -219,6 +221,7 @@ export async function handleChat(input: HandleInput): Promise<HandleOutput> {
         }
         const bookRes = await createBooking({
           apiKey: calKey,
+          apiBase: getCalApiBase(config.bookingUrl),
           eventTypeId: config.cal.eventTypeId,
           startIso: slotIso,
           name,
