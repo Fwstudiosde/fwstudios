@@ -11,7 +11,7 @@ export default async function SettingsAdminPage() {
     <>
       <PageHeader
         title="Einstellungen"
-        description="Chatbot-Preise, Setup-Gebühren und Sale-Banner."
+        description="Chatbot-Preise, Setup-Gebühren, Sale-Banner und Founding-Programme."
       />
       <SettingsEditor initial={settings} />
     </>

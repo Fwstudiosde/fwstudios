@@ -51,6 +51,17 @@ export type Customer = {
   notes?: string;
 };
 
+export type PilotSlug = "plattform" | "chatbot" | "app" | "ki";
+
+export type PilotProgram = {
+  active: boolean;
+  spotsTotal: number;
+  spotsLeft: number;
+  discountPercent: number;
+};
+
+export type PilotSettings = Record<PilotSlug, PilotProgram>;
+
 export type Settings = {
   chatbot: {
     monthly: { price: number; setupFee: number; features: string[] };
@@ -70,6 +81,7 @@ export type Settings = {
     originalMonthlyPrice: number;
     originalYearlyPrice: number;
   };
+  pilot: PilotSettings;
 };
 
 export type LeadActivity = {
@@ -164,6 +176,12 @@ const DEFAULT_SETTINGS: Settings = {
     discount: 0,
     originalMonthlyPrice: 299,
     originalYearlyPrice: 250,
+  },
+  pilot: {
+    plattform: { active: true, spotsTotal: 5, spotsLeft: 5, discountPercent: 50 },
+    chatbot: { active: true, spotsTotal: 5, spotsLeft: 5, discountPercent: 50 },
+    app: { active: true, spotsTotal: 5, spotsLeft: 5, discountPercent: 50 },
+    ki: { active: true, spotsTotal: 5, spotsLeft: 5, discountPercent: 50 },
   },
 };
 
@@ -318,7 +336,17 @@ export async function deleteCustomer(id: string): Promise<boolean> {
 // ---------- Settings ----------
 
 export async function getSettings(): Promise<Settings> {
-  return readJson<Settings>("settings.json", DEFAULT_SETTINGS);
+  const stored = await readJson<Partial<Settings>>("settings.json", DEFAULT_SETTINGS);
+  return {
+    chatbot: stored.chatbot ?? DEFAULT_SETTINGS.chatbot,
+    sale: stored.sale ?? DEFAULT_SETTINGS.sale,
+    pilot: {
+      plattform: stored.pilot?.plattform ?? DEFAULT_SETTINGS.pilot.plattform,
+      chatbot: stored.pilot?.chatbot ?? DEFAULT_SETTINGS.pilot.chatbot,
+      app: stored.pilot?.app ?? DEFAULT_SETTINGS.pilot.app,
+      ki: stored.pilot?.ki ?? DEFAULT_SETTINGS.pilot.ki,
+    },
+  };
 }
 export async function setSettings(value: Settings): Promise<void> {
   await writeJson("settings.json", value);

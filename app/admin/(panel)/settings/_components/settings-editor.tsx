@@ -1,9 +1,16 @@
 "use client";
 
 import * as React from "react";
-import type { Settings } from "@/lib/storage";
+import type { Settings, PilotSlug } from "@/lib/storage";
 import { Button } from "@/components/ui/button";
-import { Check, Loader2 } from "lucide-react";
+import { Check, Loader2, Flame } from "lucide-react";
+
+const PILOT_LABELS: Record<PilotSlug, { name: string; url: string }> = {
+  plattform: { name: "Plattform-Entwicklung", url: "/pilot/plattform" },
+  chatbot: { name: "KI-Chatbot", url: "/pilot/chatbot" },
+  app: { name: "App-Entwicklung", url: "/pilot/app" },
+  ki: { name: "KI-Lösungen", url: "/pilot/ki" },
+};
 
 export function SettingsEditor({ initial }: { initial: Settings }) {
   const [data, setData] = React.useState<Settings>(initial);
@@ -211,6 +218,130 @@ export function SettingsEditor({ initial }: { initial: Settings }) {
             />
           </Field>
         </Row>
+      </Section>
+
+      <Section title="Founding-Programme">
+        <p className="-mt-1 mb-4 text-xs text-fg-muted">
+          Die Pilot-Landingpages unter <code className="text-fg">/pilot/&lt;slug&gt;</code> nutzen
+          diese Werte. Reduzieren Sie <span className="text-fg">Plätze frei</span>, wenn ein
+          Pilot dazukommt. Auf <span className="text-fg">inaktiv</span> stellen blendet die
+          komplette Landingpage aus (404).
+        </p>
+        <div className="space-y-3">
+          {(Object.keys(PILOT_LABELS) as PilotSlug[]).map((slug) => {
+            const p = data.pilot[slug];
+            const label = PILOT_LABELS[slug];
+            return (
+              <div
+                key={slug}
+                className="rounded-xl border border-border bg-bg/40 p-4"
+              >
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="flex size-9 items-center justify-center rounded-lg border border-brand/40 bg-brand/10 text-brand">
+                      <Flame className="size-4" />
+                    </div>
+                    <div>
+                      <div className="font-display text-sm font-semibold text-fg">
+                        {label.name}
+                      </div>
+                      <a
+                        href={label.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-xs text-fg-subtle hover:text-brand"
+                      >
+                        {label.url}
+                      </a>
+                    </div>
+                  </div>
+                  <label className="inline-flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={p.active}
+                      onChange={(e) =>
+                        setData({
+                          ...data,
+                          pilot: {
+                            ...data.pilot,
+                            [slug]: { ...p, active: e.target.checked },
+                          },
+                        })
+                      }
+                      className="size-4 accent-brand"
+                    />
+                    <span className="text-xs text-fg-muted">Aktiv</span>
+                  </label>
+                </div>
+                <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                  <Field label="Plätze gesamt">
+                    <input
+                      type="number"
+                      min={0}
+                      max={99}
+                      value={p.spotsTotal}
+                      onChange={(e) =>
+                        setData({
+                          ...data,
+                          pilot: {
+                            ...data.pilot,
+                            [slug]: {
+                              ...p,
+                              spotsTotal: Number(e.target.value),
+                            },
+                          },
+                        })
+                      }
+                      className={inputCls}
+                    />
+                  </Field>
+                  <Field label="Plätze frei">
+                    <input
+                      type="number"
+                      min={0}
+                      max={p.spotsTotal}
+                      value={p.spotsLeft}
+                      onChange={(e) =>
+                        setData({
+                          ...data,
+                          pilot: {
+                            ...data.pilot,
+                            [slug]: {
+                              ...p,
+                              spotsLeft: Number(e.target.value),
+                            },
+                          },
+                        })
+                      }
+                      className={inputCls}
+                    />
+                  </Field>
+                  <Field label="Setup-Vorteil (%)">
+                    <input
+                      type="number"
+                      min={0}
+                      max={100}
+                      value={p.discountPercent}
+                      onChange={(e) =>
+                        setData({
+                          ...data,
+                          pilot: {
+                            ...data.pilot,
+                            [slug]: {
+                              ...p,
+                              discountPercent: Number(e.target.value),
+                            },
+                          },
+                        })
+                      }
+                      className={inputCls}
+                    />
+                  </Field>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </Section>
 
       <div className="sticky bottom-4 flex items-center justify-end gap-3 rounded-xl border border-border bg-surface/80 p-4 backdrop-blur-xl">
