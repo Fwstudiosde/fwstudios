@@ -60,13 +60,20 @@ export async function handleChat(input: HandleInput): Promise<HandleOutput> {
   let leadCaptured: HandleOutput["leadCaptured"];
   let bookingCreated: HandleOutput["bookingCreated"];
 
+  const calLive = Boolean(config.cal.hasApiKey && config.cal.eventTypeId);
+  const activeTools = config.toolsEnabled
+    ? calLive
+      ? CHATBOT_TOOLS.filter((t) => t.name !== "book_meeting")
+      : CHATBOT_TOOLS
+    : undefined;
+
   for (let hop = 0; hop < 5; hop++) {
     const res = await callClaude({
       apiKey,
       model: config.model,
       system,
       messages,
-      tools: config.toolsEnabled ? CHATBOT_TOOLS : undefined,
+      tools: activeTools,
       temperature: config.temperature,
       maxTokens: config.maxTokens,
     });
@@ -286,8 +293,9 @@ export async function handleChat(input: HandleInput): Promise<HandleOutput> {
   }
 
   return {
-    reply:
-      "Hmm, das hat gerade nicht geklappt. Magst du es nochmal kurz anders formulieren — oder ich schick dir den direkten Buchungslink?",
+    reply: calLive
+      ? "Hmm, das hat gerade nicht geklappt. Magst du es nochmal kurz anders formulieren? Dann schauen wir gemeinsam, welcher Termin passt."
+      : "Hmm, das hat gerade nicht geklappt. Magst du es nochmal kurz anders formulieren — oder ich schick dir den direkten Buchungslink?",
     inputTokens,
     outputTokens,
     leadCaptured,

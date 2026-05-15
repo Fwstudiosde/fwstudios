@@ -32,12 +32,12 @@ export async function buildSystemPrompt(
 
     if (config.cal.hasApiKey && config.cal.eventTypeId) {
       parts.push(
-        `Termin-Buchung (Cal.com ist live angebunden):
-1. Wenn jemand zustimmt, dass ein Call passt: ruf list_available_slots — mit from_date/to_date nur, wenn ein konkreter Zeitraum gewünscht wurde.
-2. Zeig dem User 3-4 der zurückgegebenen Slots in normalem Text (nicht alle, nicht als JSON, nicht als Markdown-Liste). Beispiel: "Ich hätte z.B. Mo 13.5. um 10:00, Di 14.5. um 14:30 oder Mi 15.5. um 09:00 frei. Was passt dir?"
-3. Wenn der User einen wählt UND du Name + Email hast: ruf book_slot mit dem exakten slot_start_iso aus dem list_available_slots Ergebnis. Frag fehlende Daten in einem Satz nach (z.B. "Magst du mir noch kurz Name und Email geben? Dann buch ich's direkt rein.").
-4. Nach erfolgreichem book_slot: bestätige in 1-2 Sätzen menschlich. Sag, dass die Cal-Bestätigung gleich per Email kommt.
-5. Niemals book_meeting verwenden, solange list_available_slots funktioniert. book_meeting ist nur Fallback bei Fehler.`
+        `Termin-Buchung (Cal.com ist live angebunden) — Du buchst DIREKT im Chat. NIEMALS einen Link senden:
+1. Sobald jemand offen für einen Call ist (oder du es vorschlägst und er nicht aktiv ablehnt): ruf list_available_slots. Nutze from_date/to_date nur, wenn der User einen konkreten Zeitraum nennt.
+2. Zeig dem User 3-4 der zurückgegebenen Slots im Fließtext (nicht alle, nicht als JSON, nicht als Markdown-Liste). Beispiel: "Ich hätte z.B. Mo 13.5. um 10:00, Di 14.5. um 14:30 oder Mi 15.5. um 09:00 frei — was passt dir?"
+3. Wenn der User einen Slot wählt UND du Name + Email hast: ruf book_slot mit dem exakten slot_start_iso aus dem list_available_slots Ergebnis. Frag fehlende Daten in EINEM Satz nach (z.B. "Top. Magst du mir noch kurz Name und Email geben? Dann buch ich's direkt rein.").
+4. Nach erfolgreichem book_slot: bestätige in 1-2 Sätzen menschlich, sag dass die Cal-Bestätigung gleich per Email kommt.
+5. WICHTIG: NIEMALS book_meeting verwenden. NIEMALS eine Buchungs-URL in den Chat schreiben — auch nicht "als Alternative", nicht "falls dir das lieber ist", nicht in Fußnoten. Wenn list_available_slots gerade keine Slots liefert: schlag einen anderen Zeitraum vor und ruf list_available_slots erneut.`
       );
     } else {
       parts.push(
@@ -53,7 +53,7 @@ export async function buildSystemPrompt(
   }
 
   parts.push(
-    "Sprache: antworte in der Sprache des Users (Default Deutsch). Konkrete Preise nennst du nicht — sag, dass das vom Umfang abhängt und im Call schnell durch ist."
+    "Sprache: antworte in der Sprache des Users (Default Deutsch). Preise für den KI-Chatbot sind transparent: Founding-Pilot 1.250 € Setup (statt 2.500 €) + 250 €/Monat bei 6 Monaten Mindestlaufzeit. Für andere Services (Plattformen, Apps, KI-Workflows): kein Festpreis im Chat — kommt nach Discovery-Call, und das sagst du auch so."
   );
 
   return { system: parts.join("\n\n"), chunks };

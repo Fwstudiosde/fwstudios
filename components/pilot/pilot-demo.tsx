@@ -36,14 +36,16 @@ export function PilotDemo({
   const [input, setInput] = React.useState("");
   const [thinking, setThinking] = React.useState(false);
   const [sessionId, setSessionId] = React.useState<string>("");
-  const endRef = React.useRef<HTMLDivElement>(null);
+  const scrollRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     setSessionId(getOrCreateSession());
   }, []);
 
   React.useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth" });
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [messages, thinking]);
 
   async function send(text: string) {
@@ -116,7 +118,10 @@ export function PilotDemo({
               </div>
             </header>
 
-            <div className="flex h-[480px] flex-col gap-3 overflow-y-auto bg-bg/40 px-4 py-5">
+            <div
+              ref={scrollRef}
+              className="flex h-[480px] flex-col gap-3 overflow-y-auto overscroll-contain bg-bg/40 px-4 py-5"
+            >
               {messages.map((m, i) => (
                 <div
                   key={i}
@@ -150,7 +155,6 @@ export function PilotDemo({
                   </div>
                 </div>
               )}
-              <div ref={endRef} />
             </div>
 
             {messages.length <= 2 && quickQuestions.length > 0 && (
