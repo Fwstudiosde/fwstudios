@@ -8,13 +8,32 @@ export function FoundingBanner({
   spotsTotal,
   discountPercent,
   phrase,
+  pricePhrase,
 }: {
   spotsLeft: number;
   spotsTotal: number;
   discountPercent: number;
   phrase: string;
+  pricePhrase?: string;
 }) {
   const allTaken = spotsLeft <= 0;
+
+  const middle = pricePhrase ? (
+    <p className="text-xs text-fg sm:text-sm">
+      <span className="font-semibold">{pricePhrase}</span>
+    </p>
+  ) : (
+    <p className="text-xs text-fg-muted sm:text-sm">
+      <span className="text-fg">
+        {phrase.split("·")[1]?.trim() || phrase}
+      </span>{" "}
+      <span className="text-fg-subtle">·</span>{" "}
+      <span className="font-semibold text-brand">
+        {discountPercent} % Setup-Vorteil
+      </span>
+    </p>
+  );
+
   return (
     <div
       role="region"
@@ -27,13 +46,7 @@ export function FoundingBanner({
           <span>Founding-Programm</span>
         </div>
         <span className="hidden h-3 w-px bg-border-strong sm:block" aria-hidden />
-        <p className="text-xs text-fg-muted sm:text-sm">
-          <span className="text-fg">{phrase.split("·")[1]?.trim() || phrase}</span>{" "}
-          <span className="text-fg-subtle">·</span>{" "}
-          <span className="font-semibold text-brand">
-            {discountPercent} % Setup-Vorteil
-          </span>
-        </p>
+        {middle}
         <span className="hidden h-3 w-px bg-border-strong sm:block" aria-hidden />
         <div className="inline-flex items-center gap-2 rounded-full border border-brand/40 bg-bg/60 px-3 py-1 text-xs font-semibold text-fg">
           {allTaken ? (

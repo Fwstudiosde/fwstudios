@@ -20,6 +20,8 @@ export function EmbeddedBooking({
   spotsTotal,
   pilotLabel,
   discountPercent,
+  takeaways,
+  eyebrowOverride,
 }: {
   calLink: string;
   topic: string;
@@ -27,6 +29,8 @@ export function EmbeddedBooking({
   spotsTotal: number;
   pilotLabel: string;
   discountPercent: number;
+  takeaways?: string[];
+  eyebrowOverride?: string;
 }) {
   const ns = React.useMemo(
     () =>
@@ -71,7 +75,7 @@ export function EmbeddedBooking({
     <Section id="termin" className="border-t border-border">
       <Container>
         <div className="mx-auto max-w-2xl text-center">
-          <Eyebrow>Pilot-Platz sichern</Eyebrow>
+          <Eyebrow>{eyebrowOverride ?? "Pilot-Platz sichern"}</Eyebrow>
           <h2 className="font-display mt-4 text-3xl font-semibold tracking-tight text-fg sm:text-4xl md:text-5xl">
             <span className="text-gradient">30 Minuten.</span>{" "}
             <span className="text-gradient-brand">Kostenlos. Verbindlich.</span>
@@ -95,6 +99,22 @@ export function EmbeddedBooking({
             </div>
           )}
         </div>
+
+        {takeaways && takeaways.length > 0 && (
+          <div className="mx-auto mt-8 max-w-2xl rounded-2xl border border-border bg-white/[0.02] p-5 sm:p-6">
+            <p className="text-xs font-semibold uppercase tracking-wider text-fg-subtle">
+              Was Sie vom Call mitnehmen — auch ohne Zusammenarbeit
+            </p>
+            <ul className="mt-3 space-y-2">
+              {takeaways.map((t) => (
+                <li key={t} className="flex items-start gap-3 text-sm text-fg-muted sm:text-[15px]">
+                  <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-brand" aria-hidden />
+                  <span>{t}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         <div className="mx-auto mt-10 max-w-4xl overflow-hidden rounded-2xl border border-border bg-white/[0.02] p-1 sm:mt-12 sm:p-2">
           <div

@@ -33,6 +33,12 @@ export function PilotDeliverables({
               <p className="mt-2 text-sm leading-relaxed text-fg-muted">
                 {d.body}
               </p>
+              {d.miniCase && (
+                <p className="mt-3 rounded-lg border border-brand/20 bg-brand/[0.04] px-3 py-2 text-xs leading-relaxed text-fg sm:text-[13px]">
+                  <span className="font-semibold text-brand">Beispiel:</span>{" "}
+                  {d.miniCase}
+                </p>
+              )}
             </div>
           ))}
         </div>

@@ -1,6 +1,15 @@
 import { Container, Section, Eyebrow } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { Check, X, Sparkles } from "lucide-react";
+import type { PilotPricing } from "@/lib/content/pilot";
+
+function formatEur(value: number) {
+  return new Intl.NumberFormat("de-DE", {
+    style: "currency",
+    currency: "EUR",
+    maximumFractionDigits: 0,
+  }).format(value);
+}
 
 export function PilotOffer({
   pilotLabel,
@@ -10,6 +19,9 @@ export function PilotOffer({
   note,
   include,
   exclude,
+  pricing,
+  pricingFooterNote,
+  ctaLabel,
 }: {
   pilotLabel: string;
   discountPercent: number;
@@ -18,6 +30,9 @@ export function PilotOffer({
   note: string;
   include: string[];
   exclude: string[];
+  pricing?: PilotPricing;
+  pricingFooterNote?: string;
+  ctaLabel?: string;
 }) {
   const allTaken = spotsLeft <= 0;
   return (
@@ -55,7 +70,8 @@ export function PilotOffer({
                     {discountPercent} % Setup-Vorteil
                   </h3>
                   <p className="mt-2 text-sm text-fg-muted">
-                    Auf den einmaligen Setup-Anteil. Reguläre Monats-/Wartungs­kosten bleiben.
+                    Auf den einmaligen Setup-Anteil. Monatlicher Betrieb bleibt
+                    regulär.
                   </p>
                 </div>
                 <div className="rounded-2xl border border-border bg-bg/60 px-5 py-4 text-center backdrop-blur">
@@ -68,6 +84,38 @@ export function PilotOffer({
                   </div>
                 </div>
               </div>
+
+              {pricing && (
+                <div className="mt-8 overflow-hidden rounded-2xl border border-border bg-bg/40">
+                  <div className="grid grid-cols-[1.4fr_1fr_1fr] text-xs uppercase tracking-wider text-fg-subtle">
+                    <div className="border-b border-border px-4 py-3 sm:px-5"></div>
+                    <div className="border-b border-r border-border bg-white/[0.02] px-3 py-3 text-center sm:px-4">
+                      Regulär
+                    </div>
+                    <div className="border-b border-border bg-brand/[0.06] px-3 py-3 text-center font-semibold text-brand sm:px-4">
+                      Founding-Kunde
+                    </div>
+                  </div>
+
+                  <PricingRow
+                    label="Setup einmalig"
+                    regular={formatEur(pricing.setupRegular)}
+                    founding={formatEur(pricing.setupFounding)}
+                    foundingHighlight
+                  />
+                  <PricingRow
+                    label="Monatlich"
+                    regular={formatEur(pricing.monthly)}
+                    founding={formatEur(pricing.monthly)}
+                  />
+                  <PricingRow
+                    label="Mindestlaufzeit"
+                    regular={`${pricing.minimumTermMonths} Monate`}
+                    founding={`${pricing.minimumTermMonths} Monate`}
+                    isLast
+                  />
+                </div>
+              )}
 
               <div className="mt-8 grid gap-8 sm:grid-cols-2">
                 <div>
@@ -104,12 +152,13 @@ export function PilotOffer({
 
               <div className="mt-10 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <p className="text-xs text-fg-subtle sm:max-w-md">
-                  Festpreis kommt nach dem 30-Min-Discovery-Call. Erst dann unterschreiben Sie etwas.
+                  {pricingFooterNote ??
+                    "Festpreis kommt nach dem 30-Min-Discovery-Call. Erst dann unterschreiben Sie etwas."}
                 </p>
                 <Button href="#termin" variant="brand" size="lg">
                   {allTaken
                     ? "Auf die Warteliste"
-                    : "Pilot-Platz sichern"}
+                    : ctaLabel ?? "Pilot-Platz sichern"}
                 </Button>
               </div>
             </div>
@@ -117,5 +166,40 @@ export function PilotOffer({
         </div>
       </Container>
     </Section>
+  );
+}
+
+function PricingRow({
+  label,
+  regular,
+  founding,
+  foundingHighlight = false,
+  isLast = false,
+}: {
+  label: string;
+  regular: string;
+  founding: string;
+  foundingHighlight?: boolean;
+  isLast?: boolean;
+}) {
+  const borderCls = isLast ? "" : "border-b border-border";
+  return (
+    <div
+      className={`grid grid-cols-[1.4fr_1fr_1fr] items-center text-sm ${borderCls}`}
+    >
+      <div className="px-4 py-3.5 font-medium text-fg sm:px-5">{label}</div>
+      <div className="border-r border-border px-3 py-3.5 text-center text-fg-muted sm:px-4">
+        <span className={foundingHighlight ? "line-through" : ""}>
+          {regular}
+        </span>
+      </div>
+      <div
+        className={`px-3 py-3.5 text-center font-semibold sm:px-4 ${
+          foundingHighlight ? "bg-brand/[0.06] text-brand" : "text-fg"
+        }`}
+      >
+        {founding}
+      </div>
+    </div>
   );
 }

@@ -1,9 +1,54 @@
 import type { PilotSlug } from "@/lib/storage";
 
 export type PilotProblem = { title: string; body: string };
-export type PilotDeliverable = { title: string; body: string };
+export type PilotDeliverable = {
+  title: string;
+  body: string;
+  miniCase?: string;
+};
 export type PilotProcessStep = { title: string; body: string };
 export type PilotFaq = { q: string; a: string };
+
+export type PilotPricing = {
+  setupRegular: number;
+  setupFounding: number;
+  monthly: number;
+  minimumTermMonths: number;
+};
+
+export type PilotTrustLogo = { name: string; abbr: string };
+
+export type PilotTestimonial = {
+  quote: string;
+  author: string;
+  initials: string;
+  role: string;
+  company: string;
+  context?: string;
+  linkedinUrl?: string;
+};
+
+export type PilotFounder = {
+  name: string;
+  greetingHeadline: string;
+  paragraphs: string[];
+  email: string;
+  phoneDisplay: string;
+  phoneTel: string;
+  linkedinUrl?: string;
+};
+
+export type PilotDemo = {
+  welcomeMessage: string;
+  quickQuestions: string[];
+  caption?: string;
+};
+
+export type PilotCtaLabels = {
+  heroPrimary?: string;
+  afterOffer?: string;
+  afterFaq?: string;
+};
 
 export type PilotContent = {
   slug: PilotSlug;
@@ -12,10 +57,14 @@ export type PilotContent = {
   heroEyebrow: string;
   heroTitle: string;
   heroHighlight: string;
+  heroTitleMobile?: { line1: string; line2: string };
   heroSubline: string;
+  heroPriceLine?: string;
   primaryCta: string;
   secondaryCta: string;
+  ctas?: PilotCtaLabels;
   bannerPhrase: string;
+  bannerPricePhrase?: string;
   problemsTitle: string;
   problems: PilotProblem[];
   deliverablesTitle: string;
@@ -23,6 +72,8 @@ export type PilotContent = {
   offerNote: string;
   offerInclude: string[];
   offerExclude: string[];
+  pricing?: PilotPricing;
+  pricingFooterNote?: string;
   processTitle: string;
   process: PilotProcessStep[];
   whyFoundingTitle: string;
@@ -31,6 +82,17 @@ export type PilotContent = {
   faq: PilotFaq[];
   calLink: string;
   calTopic: string;
+  bookingTakeaways?: string[];
+  phoneDisplay?: string;
+  phoneTel?: string;
+  demo?: PilotDemo;
+  trustLogos?: PilotTrustLogo[];
+  trustLogosCaption?: string;
+  trustLogosFootnote?: string;
+  testimonial?: PilotTestimonial;
+  testimonialEyebrow?: string;
+  testimonialHeadline?: string;
+  founder?: PilotFounder;
 };
 
 export const PILOT_CONTENT: Record<PilotSlug, PilotContent> = {
@@ -166,11 +228,23 @@ export const PILOT_CONTENT: Record<PilotSlug, PilotContent> = {
     heroEyebrow: "Founding-Programm · KI-Chatbot",
     heroTitle: "Ein KI-Chatbot, der",
     heroHighlight: "Ihre Website verkauft.",
+    heroTitleMobile: { line1: "KI-Chatbot,", line2: "der verkauft." },
     heroSubline:
       "Trainiert auf Ihre Inhalte, antwortet 24/7 in der Sprache Ihres Kunden, fängt Leads ein und triggert Workflows. Live in 7 Tagen — und konvertiert ab Woche zwei.",
+    heroPriceLine:
+      "Setup regulär 2.500 € netto · Für die ersten 5 Founding-Kunden 1.250 €. Monatlich 250 € netto.",
     primaryCta: "Pilot-Platz sichern",
     secondaryCta: "Was bekomme ich konkret?",
+    ctas: {
+      heroPrimary: "Pilot-Platz sichern (1.250 €)",
+      afterOffer: "Discovery-Call buchen",
+      afterFaq: "Jetzt 30-Min-Call sichern",
+    },
     bannerPhrase: "Founding-Programm · KI-Chatbot Projekte · 50 % Setup-Vorteil",
+    bannerPricePhrase:
+      "🔥 Setup statt 2.500 € nur 1.250 € · Endet bei Vergabe",
+    phoneDisplay: "0162 7793119",
+    phoneTel: "+4901627793119",
     problemsTitle: "Warum jetzt.",
     problems: [
       {
@@ -191,10 +265,14 @@ export const PILOT_CONTENT: Record<PilotSlug, PilotContent> = {
       {
         title: "Auf Ihre Marke trainiert",
         body: "Wir crawlen Ihre Website, embedden die Inhalte. Der Bot antwortet in Ihrem Ton — nie generisch.",
+        miniCase:
+          "LIIAN Immobilien — Produktinfos, Größenberatung und Retouren in Brand-Tonalität, ohne ein einziges generisches Standard-Skript.",
       },
       {
         title: "Backend-Integration",
         body: "Datenbank-Lookups, CRM-Eintrag, Order-Status. Der Bot weiß mehr als nur Marketing-Text.",
+        miniCase:
+          "Frauenarzt-Zentrum Gießen — interner KI-Bot für Terminanfragen, Rezept-Status und Sprechzeiten, angebunden an Praxis-System.",
       },
       {
         title: "Email- & Termin-Workflows",
@@ -225,11 +303,24 @@ export const PILOT_CONTENT: Record<PilotSlug, PilotContent> = {
     ],
     offerExclude: [
       "Komplexe Custom-AI-Modelle (separates Projekt)",
-      "Mehr als 1 Backend-System (auf Anfrage)",
+      "Mehr als 1 Backend-System (Mini-Projekt ab 490 €)",
       "Telefon-/Voice-Bots",
+      "Multi-Site-Setup",
     ],
-    processTitle: "Vom Onboarding zum Launch — in 7 Tagen.",
+    pricing: {
+      setupRegular: 2500,
+      setupFounding: 1250,
+      monthly: 250,
+      minimumTermMonths: 6,
+    },
+    pricingFooterNote:
+      "Alle Preise zzgl. USt. · Festpreis nach Discovery-Call bestätigt. Erst dann unterschreiben Sie etwas.",
+    processTitle: "Vom Discovery-Call zum Launch.",
     process: [
+      {
+        title: "Tag 0 — Discovery & Vertrag",
+        body: "30-Min-Discovery-Call. Wir prüfen Use-Case, klären Scope und nennen den Festpreis. Bei Passung: Vertrag und 50 % Anzahlung (Founding 625 €). Erst dann startet der 7-Tage-Sprint.",
+      },
       {
         title: "Tag 1 — Onboarding",
         body: "Kick-off-Call, Zugänge, Branding-Briefing. Wir starten den Website-Crawl.",
@@ -251,18 +342,26 @@ export const PILOT_CONTENT: Record<PilotSlug, PilotContent> = {
     whyFoundingPoints: [
       "Wir bauen Referenz-Cases statt Anzeigen zu schalten — und gestalten dafür die ersten 5 Bots gemeinsam mit Founding-Kunden.",
       "Jeder Pilotkunde bekommt 50 % Setup-Vorteil — als Gegenleistung dürfen wir das Projekt als Case-Study nutzen (anonymisiert möglich).",
-      "Nach den 5 Plätzen gilt der reguläre Preis. Keine Verlängerung, keine zweite Welle.",
+      "Nach den 5 Plätzen gilt der reguläre Setup-Preis von 2.500 €. Keine Verlängerung, keine zweite Welle, keine Ausnahmen. Sie sparen jetzt 1.250 € — oder nie.",
       "Sie arbeiten direkt mit den Gründern — kein Junior, keine Tickets.",
     ],
     faqTitle: "Häufige Fragen.",
     faq: [
       {
-        q: "Wieviel kostet der Bot regulär?",
-        a: "Setup-Gebühr je nach Komplexität, plus monatlicher Betrieb. Als Pilotkunde sparen Sie 50 % auf den Setup-Anteil. Wir nennen Ihnen vor Vertragsunterschrift beide Zahlen.",
+        q: "Was kostet der Bot konkret?",
+        a: "Setup einmalig 2.500 € netto, monatlicher Betrieb 250 € netto bei 6 Monaten Mindestlaufzeit. Als Founding-Kunde sparen Sie 50 % auf das Setup — Sie zahlen 1.250 €. Der Monatspreis bleibt bei 250 €. Im Discovery-Call prüfen wir gemeinsam, ob Ihr Use-Case innerhalb der inkludierten Leistungen liegt — wenn ja, ist das der Festpreis.",
+      },
+      {
+        q: "Was ist im Preis nicht enthalten?",
+        a: "Mehr als 1 Backend-System (auf Anfrage als Mini-Projekt ab 490 €), komplexe Custom-AI-Modelle (separates Projekt), Telefon-/Voice-Bots, Multi-Site-Setup. Größere Content-Updates nach den 30 Tagen Tuning werden in 1-Stunden-Blöcken à 120 € abgerechnet. Wir nennen alle Sonderpositionen vor Vertragsunterschrift.",
+      },
+      {
+        q: "Wie läuft die Zahlung?",
+        a: "50 % Anzahlung bei Vertragsstart (als Founding-Kunde 625 €). Restzahlung des Setup-Anteils nach Go-Live. Der monatliche Betrieb von 250 € wird ab Go-Live monatlich im Voraus per SEPA-Lastschrift oder Überweisung abgerechnet. Rechnung als deutsches Solo-Unternehmen mit USt., AVV inklusive.",
       },
       {
         q: "Können wir wirklich in 7 Tagen live?",
-        a: "Ja — vorausgesetzt, Sie liefern am Tag 1 Zugänge und Branding-Material. Wir haben den Prozess fünf Mal durchlaufen, das Tempo ist real.",
+        a: "Ja — vorausgesetzt, Sie liefern am Tag 1 Zugänge und Branding-Material. Die 7 Tage zählen ab Vertragsstart und Anzahlungs-Eingang, nicht ab Erstgespräch.",
       },
       {
         q: "Was ist mit Halluzinationen?",
@@ -274,11 +373,60 @@ export const PILOT_CONTENT: Record<PilotSlug, PilotContent> = {
       },
       {
         q: "Was passiert nach den 30 Tagen Tuning?",
-        a: "Sie können den Bot weiter mit uns betreiben (Monatsgebühr) oder Setup übernehmen. Sie sind frei.",
+        a: "Sie können den Bot weiter mit uns betreiben für 250 € netto/Monat — enthalten sind Hosting, API-Kosten, Monitoring, Bug-Fixes, Sicherheitsupdates und 1 Stunde Content-Pflege pro Monat. Oder Sie übernehmen das komplette Setup: Code, Konfiguration, Trainingsdaten. Kein Vendor Lock-In. Mindestlaufzeit nach den 30 Tagen Tuning sind weitere 5 Monate (insgesamt 6 Monate ab Vertragsstart).",
       },
     ],
     calLink: process.env.NEXT_PUBLIC_CAL_LINK_PILOT_CHATBOT ?? "fwstudios/30min",
     calTopic: "Pilot KI-Chatbot",
+    bookingTakeaways: [
+      "Ehrliche Einschätzung, ob KI-Chatbot für Ihren Use-Case sinnvoll ist",
+      "2–3 konkrete Anwendungsfälle auf Ihrer Website",
+      "Bei Passung: Festpreis und Vertragsvorschlag noch im Call",
+    ],
+    demo: {
+      welcomeMessage:
+        "Hi! Ich bin der FWStudios-Bot — trainiert auf diese Seite. Fragen Sie mich zum Founding-Programm, zu Preisen oder dazu, wie der Chatbot bei Ihnen aussehen würde.",
+      quickQuestions: [
+        "Was kostet der Bot konkret?",
+        "Wie läuft der 7-Tage-Sprint?",
+        "Was ist nicht im Preis enthalten?",
+      ],
+      caption:
+        "Antwortet in ~1,2 Sekunden. Trainiert auf 100 % unsere Website-Inhalte. Sagt 'das weiß ich nicht', wenn er die Antwort nicht in seinen Daten findet.",
+    },
+    trustLogos: [
+      { name: "LIIAN Immobilien", abbr: "LIIAN" },
+      { name: "Stealth B2B SaaS", abbr: "STEALTH" },
+      { name: "Versicherungs-Mittelstand", abbr: "INSURE" },
+      { name: "E-Commerce DACH", abbr: "E-COM" },
+      { name: "Bäckerei-Kette", abbr: "BAKERY" },
+      { name: "Personal Coach Studio", abbr: "COACH" },
+    ],
+    trustLogosCaption: "Bereits umgesetzt für",
+    trustLogosFootnote:
+      "Cases auf Wunsch anonymisiert. Echte Kunden, echte Bots, echte Ergebnisse.",
+    testimonialEyebrow: "Stimme aus dem Programm",
+    testimonialHeadline:
+      "„Nach zwei Wochen war der Bot Teil unseres Verkaufsteams.“",
+    testimonial: {
+      quote:
+        "Innerhalb von einer Woche stand der Chatbot — und nach zwei Wochen war er ohne Wenn und Aber Teil unseres Verkaufsteams. Hat sich nach drei Monaten bezahlt gemacht.",
+      author: "T. Hauser",
+      initials: "TH",
+      role: "Geschäftsführer",
+      company: "Immobilien · DACH",
+    },
+    founder: {
+      name: "Finn",
+      greetingHeadline: "Hi, ich bin Finn — Gründer von FWStudios.",
+      paragraphs: [
+        "Ich entwickle produktionsreife KI-Lösungen und Plattformen und betreibe FWStudios solo — mit Claude Code als Multiplikator. Genau das erlaubt mir, in 7 Tagen zu liefern, wofür klassische Agenturen 8 Wochen brauchen.",
+        "Wenn Sie Founding-Kunde werden, arbeiten Sie nicht mit einem Junior und nicht über ein Ticket-System. Sie haben mich direkt am Telefon, per Email oder im Call.",
+      ],
+      email: "finn@fwstudios.de",
+      phoneDisplay: "0162 7793119",
+      phoneTel: "+4901627793119",
+    },
   },
   app: {
     slug: "app",
